@@ -1,0 +1,30 @@
+{
+  "name": "<%= _.slugify(appname) %>",
+  "version": "<%= appversion %>",
+  "main": "index.js",
+  "description": "<%= appdescription %>",
+  "appDependencies": {
+    "hornet-js-components": "<%= fmkversion %>",
+    "hornet-js-core": "<%= fmkversion %>",
+    "hornet-js-ts-typings": "<%= fmkversion %>",
+    "hornet-js-utils": "<%= fmkversion %>",
+    "continuation-local-storage": "3.1.4",
+    "connect-flash": "0.1.1",
+    "node-jsx": "0.13.3",
+    "passport": "0.2.1",
+    "passport-local": "1.0.0",
+    "sha1": "1.1.1"
+  },
+  "buildAndTestDependencies": {
+    "chai": "1.10.0",
+    "chai-jquery": "2.0.0",
+    "cheerio": "0.18.0",
+    "sinon": "1.13.0",
+    "sinon-chai": "2.7.0"
+  },
+  "scripts": {
+    "init-dev": "hb install",
+    "start": "node index.js"
+  },
+  "author": "MAEDI"
+}

@@ -1,0 +1,36 @@
+Description:
+    Créé une application web Hornet JS par défaut
+
+Example:
+    yo hornet-js [--includeTable] [--includeCalendar]
+
+    Cela créé:
+        package.json
+        builder.js
+        config\application.json
+        config\default.json
+        config\navigation.json
+        public\img\logoHornet.png
+        src\actions\contact-actions.ts
+        src\dispatcher\app-dispatcher.ts
+        src\routes\routes.ts
+        src\routes\contact-routes.ts
+        src\services\service-api.ts
+        src\services\contact-api.ts
+        src\stores\contact-store.ts
+        src\stores\navigation-store.ts
+        src\views\contact\contact-form.ts
+        src\views\contact\contact-page.jsx
+        src\views\layouts\app.handlebars
+        src\views\layouts\main.handlebars
+        src\views\plan-appli\plan-appli-page.jsx
+        src\views\accessibilite-page.jsx
+        src\views\aide-page.jsx
+        src\views\erreur-page.jsx
+        src\views\home-page.jsx
+        src\views\hornet-app.jsx
+        src\client.ts
+        src\server.ts
+        src\bouchon\bouchon-routes.ts
+        src\bouchon\data\example.json
+        log\doNotRemoveMe.txt

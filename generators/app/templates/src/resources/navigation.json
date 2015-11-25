@@ -1,0 +1,44 @@
+{
+  "menu": [
+    {
+      "text": "navigation.welcome",
+      "url": "/",
+      "visibleDansMenu": true,
+      "visibleDansPlan": true
+    },
+    {
+      "text": "navigation.accessibility",
+      "url": "/politiqueAccessibilite",
+      "visibleDansPlan": true,
+      "visibleDansMenu": false
+    },
+    {
+      "text": "navigation.contact",
+      "url": "/contact",
+      "visibleDansMenu": false,
+      "visibleDansPlan": true
+    },
+    {
+      "text": "navigation.help",
+      "url": "/aide",
+      "visibleDansMenu": false,
+      "visibleDansPlan": true
+    },
+    {
+      "text": "navigation.plan",
+      "url": "/planAppli",
+      "visibleDansMenu": false,
+      "visibleDansPlan": false,
+      "rolesAutorises": [
+        "ROLE_<%= _.slugify(appname) %>_USER",
+        "ROLE_<%= _.slugify(appname) %>_ADMIN"
+      ]
+    },
+    {
+      "text": "navigation.declarationconformity",
+      "url": "/declarationConformite",
+      "visibleDansMenu": false,
+      "visibleDansPlan": false
+    }
+  ]
+}
