@@ -139,3 +139,10 @@ $ hb w
 ```
 
 Puis, utiliser un navigateur web pour y accéder par l'url [http://localhost:8888/nom_de_l_application](http://localhost:8888/nom_de_l_application).
+
+
+## Licence
+
+applitutoriel-service est sous [licence cecill 2.1](./LICENCE.md).
+
+Site web : [![http://www.cecill.info](http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html)](http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html)
