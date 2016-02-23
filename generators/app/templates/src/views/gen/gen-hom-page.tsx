@@ -1,4 +1,3 @@
-///<reference path="../../../node_modules/app/hornet-js-ts-typings/definition.d.ts"/>
 
 import React = require("react");
 import HornetComponent = require("hornet-js-components/src/hornet-component");
@@ -17,10 +16,9 @@ class HomePage extends HornetComponent<any,any> {
     static defaultProps = {
         themes: [
             {
-                key: "intranet",
-                label: "Thème Diplonet (intranet)"
+                key: "default",
+                label: "Thème default"
             }
-
         ]
     };
 
@@ -33,10 +31,10 @@ class HomePage extends HornetComponent<any,any> {
                     <h2>Accueil</h2>
 
                     <div>
-                        <h3>Qu'est-ce que l'application <%= appname %> ?</h3>
+                        <h3>Qu'est-ce que l'application <%= apptitle %> ?</h3>
 
                         <div>
-                            <p className="texte">L'application <%= appname %> a pour objectif de présenter une application
+                            <p className="texte">L'application <%= apptitle %> a pour objectif de présenter une application
                                 basée sur le framework Hornet.
                             </p>
 

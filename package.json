@@ -1,12 +1,19 @@
 {
   "name": "generator-hornet-js",
-  "version": "5.0.0",
+  "version": "5.0.1",
+  "license": "CECILL-2.1",
   "description": "Générateur de projet d'application web Hornet JS",
+  "bugs": {
+    "url": "https://github.com/diplomatiegouvfr/generator-hornet-js/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diplomatiegouvfr/generator-hornet-js.git"
+  },
   "keywords": [
     "yeoman-generator"
   ],
   "author": "MAEDI",
-  "license": "CECILL v2",
   "dependencies": {
     "lodash": "3.9.3",
     "underscore.string": "3.0.3",

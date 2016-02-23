@@ -1,4 +1,3 @@
-///<reference path="../../node_modules/app/hornet-js-ts-typings/definition.d.ts"/>
 "use strict";
 import routerInterfaces = require("hornet-js-core/src/routes/router-interfaces");
 import utils = require("hornet-js-utils");
@@ -11,9 +10,9 @@ class Routes implements routerInterfaces.IRoutesBuilder {
 
     buildViewRoutes(match:routerInterfaces.MatchFn) {
 
-        logger.info("Initialisation des routes");
+        logger.info("Initialisation des view-routes");
 
-        match.lazy("/contact", "gen/gen-cnt-routes");
+        match.lazy("/contact", "cnt/gen-cnt-routes");
 
         match("/", () => {
             logger.info("match route / src/views/gen/gen-home-page");
@@ -64,7 +63,7 @@ class Routes implements routerInterfaces.IRoutesBuilder {
 
     buildDataRoutes(match:routerInterfaces.MatchFn) {
         logger.info("Initialisation des data-routes");
-        match.lazy("/contact", "gen/gen-cnt-routes");
+        match.lazy("/contact", "cnt/gen-cnt-routes");
     }
 }
 export = Routes;

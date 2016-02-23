@@ -100,7 +100,10 @@ var HornetApp = React.createClass({
     },
 
     _getMenuItemAuth: function () {
+
         var menuItem;
+
+        /*
         var userLogin = this.getStore(PageInformationsStore).getCurrentUser();
         userLogin = (userLogin && userLogin.name) || "guest";
 
@@ -128,6 +131,16 @@ var HornetApp = React.createClass({
                 text: "navigation.connect"
             };
         }
+        */
+
+        menuItem = {
+            id: MenuConstants.MENU_ROOT + "1",
+            url: "#",
+            visibleDansMenu: true,
+            level: 0,
+            text: this.formatMessage(this.i18n("navigation.disconnect"), {userLogin: "guest"})
+        };
+
         return menuItem;
     },
 

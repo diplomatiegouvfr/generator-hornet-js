@@ -1,4 +1,3 @@
-///<reference path='../node_modules/app/hornet-js-ts-typings/definition.d.ts'/>
 "use strict";
 // En tout premier: transpileur jsx -> js
 require("node-jsx").install({
@@ -6,22 +5,14 @@ require("node-jsx").install({
     harmony: true
 });
 
-//L'import du logger doit être fait le plus tôt possible
+// L'import du logger doit être fait le plus tôt possible
 import utils = require("hornet-js-utils");
 import Server = require("hornet-js-core/src/server");
 import ServerConfiguration = require("hornet-js-core/src/server-conf");
 
-import Logger = require("hornet-js-utils/src/logger");
-
-import ServerLog = require("hornet-js-core/src/log/server-log");
-var serveurLoggerFn = ServerLog.getLoggerBuilder(utils.config.get("log"));
-
-var logger = utils.getLogger("<%= _.slugify(appname) %>.server", serveurLoggerFn);
-
-(<any> Error).stackTraceLimit = Infinity;
-
 import Routes = require("src/routes/routes");
 import React = require("react");
+import fs = require("fs");
 
 import AppI18nLoader = require("src/i18n/app-i18n-loader");
 var Menu = require("src/resources/navigation");
@@ -33,7 +24,7 @@ var HornetLayout = require("src/views/layouts/hornet-layout");
 var HornetLayoutReact = React.createFactory(HornetLayout);
 var HornetErrorComponent = require("src/views/gen/gen-err-page");
 
-//Enregistrement des stores
+// Enregistrement des stores
 import AppDispatcher = require("src/dispatcher/app-dispatcher");
 
 function routeLoader(name) {
@@ -49,7 +40,7 @@ var configServer:ServerConfiguration = {
     layoutComponent: HornetLayoutReact,
     errorComponent: HornetErrorComponent,
     defaultRoutesClass: new Routes(),
-    sessionStore: null, //new RedisStore({host: "localhost",port: 6379,db: 2,pass: "RedisPASS"}),
+    sessionStore: null, // new RedisStore({host: "localhost",port: 6379,db: 2,pass: "RedisPASS"}),
     routesLoaderfn: routeLoader,
     /*Directement un flux JSON >>internationalization:require("./i18n/messages-fr-FR.json"),*/
     /*Sans utiliser le système clé/valeur>> internationalization:null,*/
@@ -64,13 +55,21 @@ var configServer:ServerConfiguration = {
     ]
 };
 
+var key = utils.config.getOrDefault("server.https.key", false);
+var cert = utils.config.getOrDefault("server.https.cert", false);
+if (key && cert) {
+    configServer.httpsOptions = {
+        key: fs.readFileSync(key, "utf8"),
+        cert: fs.readFileSync(cert, "utf8"),
+        passphrase: utils.config.get("server.https.passphrase")
+    };
+}
 
 import HornetMiddlewares = require("hornet-js-core/src/middleware/middlewares")
-
-
+var hornetMiddlewareList = new HornetMiddlewares.HornetMiddlewareList();
+/*
 var middlewares = [
     HornetMiddlewares.LoggerTIDMiddleware,
-    HornetMiddlewares.DisableKeepAliveMiddleware,
     HornetMiddlewares.SecurityMiddleware,
     HornetMiddlewares.WelcomePageRedirectMiddleware,
     HornetMiddlewares.StaticPathMiddleware,
@@ -85,7 +84,6 @@ var middlewares = [
     HornetMiddlewares.RouterViewMiddleware,
     HornetMiddlewares.ErrorMiddleware
 ];
-
-var server = new Server(configServer, middlewares);
-server.start();
+*/
+var server = new Server(configServer, hornetMiddlewareList);
 server.start();

@@ -1,18 +1,24 @@
 {
+  "themeUrl": "<%= themeurl %>",
+  "fullSpa": {
+    "enabled": <%= mode %>,
+    "host": "<%= servicesurl %>",
+    "name": "<%= _.slugify(appname) %>-service",
+    "staticPath": ""
+  },
   "dispatcher": {
     "stores": {
       "PageInformationStore": {
-        "themeUrl": "<%= themeurl %>",
         "currentUser": {
           "name": "admin",
           "roles": [
             {
               "id": 1,
-              "nom": "<%= _.slugify(appname) %>_ADMIN"
+              "name": "<%= _.slugify(appname) %>_ADMIN"
             },
             {
               "id": 2,
-              "nom": "<%= _.slugify(appname) %>_USER"
+              "name": "<%= _.slugify(appname) %>_USER"
             }
           ]
         }
@@ -22,15 +28,15 @@
       }
     }
   },
-  "contextPath": "<%= _.slugify(appname) %>-spa",
-  "fullspa": {
-    "enabled": false,
-    "host": "",
-    "name": "services"
-  },
-  "services": {
-    "host": "http://localhost:8888/",
-    "name": "mock"
-  },
-  "locale": "fr-FR"
+  "locale": "fr-FR",
+  "mode": "development",
+  "AppSharedProps": {
+    "appName": "<%= appname %>",
+    "appVersion": "<%= appversion %>",
+    "appDescription": "<%= appdescription %>",
+    "appAuthor": "MAEDI",
+    "loginUrl": "/login",
+    "logoutUrl": "/logout",
+    "welcomePageUrl": "/accueil"
+  }
 }

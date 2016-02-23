@@ -1,10 +1,10 @@
-'use strict';
-var fs = require('fs');
-var path = require('path');
-var yeoman = require('yeoman-generator');
-var crypto = require('crypto');
-var _ = require('underscore.string');
-var lodash = require('lodash');
+"use strict";
+var fs = require("fs");
+var path = require("path");
+var yeoman = require("yeoman-generator");
+var crypto = require("crypto");
+var _ = require("underscore.string");
+var lodash = require("lodash");
 
 
 module.exports = yeoman.Base.extend({
@@ -12,13 +12,13 @@ module.exports = yeoman.Base.extend({
         yeoman.Base.apply(this, arguments);
         this.log("starting");
 
-        var pkg = require('../../package.json');
+        var pkg = require("../../package.json");
         this.fmkversion = pkg.version;
         this.mode = "isomorphic";
         this.argument("appname", {type: String, required: false});
     },
     prompting: function () {
-        var pkg = require('../../package.json'),
+        var pkg = require("../../package.json"),
             prompts = [],
             defaultAppName = path.basename(process.cwd());
 
@@ -56,7 +56,6 @@ module.exports = yeoman.Base.extend({
             message: "Version du framework (hornet-js)",
             default: pkg.version
         });
-        /*
          prompts.push({
          type: "list",
          name: "mode",
@@ -64,19 +63,18 @@ module.exports = yeoman.Base.extend({
          choices: ["isomorphic", "fullSPA"],
          default: "isomorphic"
          });
-         */
         prompts.push({
             type: "input",
             name: "themeurl",
             message: "Url du thème",
-            default: "http://localhost:7777/5.0.0/default"
+            default: "http://localhost:7777/" + pkg.version + "/default"
         });
         // Services
         prompts.push({
             type: "input",
             name: "servicesurl",
             message: "URL de base des services de l'application",
-            default: "http://localhost:8080"
+            default: "http://localhost:8080/"
         });
         prompts.push({
             type: "input",
@@ -96,44 +94,50 @@ module.exports = yeoman.Base.extend({
         var done = this.async();
         this.prompt(prompts, function (answers) {
             if (!this.appname) {
-                this._applyParam(answers, 'appname', 'appname');
+                this._applyParam(answers, "appname", "appname");
             }
-            this._applyParam(answers, 'version', 'appversion');
-            this._applyParam(answers, 'fmkversion', 'fmkversion');
-            this._applyParam(answers, 'description', 'appdescription');
-            this._applyParam(answers, 'apptitle', 'apptitle');
-            this._applyParam(answers, 'mode', 'mode');
+            this._applyParam(answers, "version", "appversion");
+            this._applyParam(answers, "fmkversion", "fmkversion");
+            this._applyParam(answers, "description", "appdescription");
+            this._applyParam(answers, "apptitle", "apptitle");
+            this._applyParam(answers, "mode", "mode");
 
             // Thème
-            this._applyParam(answers, 'themeurl');
+            this._applyParam(answers, "themeurl");
 
             // Détermination du themeHost
-            var tmpHost = answers.themeurl.split('/');
-            var themeHost = tmpHost[0] + '//' + tmpHost[2];
+            var tmpHost = answers.themeurl.split("/");
+            var themeHost = tmpHost[0] + "//" + tmpHost[2];
             this.config.set("themeHost", themeHost);
             this["themeHost"] = themeHost;
+
+            this["themeUrlVariabilise"] = answers.themeurl.replace(themeHost, "${themeHost}");
 
            this.log(this.themeHost);
 
             // Services
-            this._applyParam(answers, 'servicesurl');
-            this._applyParam(answers, 'servicesname');
-            this._applyParam(answers, 'servicesversion');
+            this._applyParam(answers, "servicesurl");
+            this._applyParam(answers, "servicesname");
+            this._applyParam(answers, "servicesversion");
 
             done();
         }.bind(this));
     },
     writing: function () {
         //builder.js
-        this._copy('builder.js');
+        this._copy("builder.js");
+
+        //tsconfig.json
+        this._copy("tsconfig.json");
 
         //index.ts
-        this._copy('index.ts');
+        this._copy("index.ts");
 
         // package.json
-        this._copy('_package.json', 'package.json', {
+        this._copy("_package.json", "package.json", {
                 _: _,
                 appname: this.appname,
+                apptitle: this.apptitle,
                 appversion: this.appversion,
                 appdescription: this.appdescription,
                 fmkversion: this.fmkversion
@@ -142,21 +146,24 @@ module.exports = yeoman.Base.extend({
         // config/*
         this._writingConfig();
         // public
-        // Attention, ne pas copier l'image unitairement, sinon le proccessing va la corrompre
-        this._copyDir('static/img/');
+        // Attention, ne pas copier l"image unitairement, sinon le proccessing va la corrompre
+        this._copyDir("static/img/");
 
         if (this.mode === "fullSPA") {
-            this._copy('static/index.html', 'static/index.html', {
+            this._copy("static/index.html", "static/index.html", {
                 _: _,
                 themeurl: this.themeurl,
                 appname: this.appname,
                 appversion: this.appversion
             });
-            this._copy('static/config-spa.json', 'static/config-spa.json', {
+            this._copy("static/config-spa.json", "static/config-spa.json", {
                 _: _,
                 themeurl: this.themeurl,
                 appname: this.appname,
-                appversion: this.appversion
+                appversion: this.appversion,
+                appdescription: this.appdescription,
+                mode: (this.mode === "fullSPA"),
+                servicesurl: this.servicesurl
             });
         }
 
@@ -165,7 +172,7 @@ module.exports = yeoman.Base.extend({
     },
     _writingConfig: function () {
         // config/default.json
-        this._copy('config/default.json', 'config/default.json', {
+        this._copy("config/default.json", "config/default.json", {
                 _: _,
                 appname: this.appname,
                 appversion: this.appversion,
@@ -176,16 +183,19 @@ module.exports = yeoman.Base.extend({
                 sessionsecret1: this._random(),
                 sessionsecret2: this._random(),
                 mode: (this.mode === "fullSPA"),
-                themeHost: this.themeHost
+                themeHost: this.themeHost,
+                themeUrlVariabilise: this.themeUrlVariabilise
             }
         );
         // config/navigation.json
-        this._copy('src/resources/navigation.json', 'src/resources/navigation.json', {
+        this._copy("src/resources/navigation.json", "src/resources/navigation.json", {
                 _: _,
                 appname: this.appname,
                 appversion: this.appversion
             }
         );
+
+        this._copy("config/log4js.json", {});
     },
     _writingSrc: function () {
         var defaultConfig = {
@@ -195,65 +205,78 @@ module.exports = yeoman.Base.extend({
         };
 
         // actions
-        this._copy('src/actions/gen/gen-cnt-actions.ts', defaultConfig);
+        this._copy("src/actions/cnt/gen-cnt-actions.ts", defaultConfig);
 
         // dispatcher
-        this._copy('src/dispatcher/app-dispatcher.ts', defaultConfig);
+        this._copy("src/dispatcher/app-dispatcher.ts", defaultConfig);
 
         // i18n
-        this._copy('src/i18n/app-i18n-loader.ts', defaultConfig);
-        this._copy('src/resources/messages.json', defaultConfig);
-        this._copy('src/resources/messages-fr-FR.json', defaultConfig);
+        this._copy("src/i18n/app-i18n-loader.ts", defaultConfig);
+        this._copy("src/resources/messages.json", defaultConfig);
+        this._copy("src/resources/messages-fr-FR.json", defaultConfig);
 
         // routes
-        this._copy('src/routes/routes.ts', defaultConfig);
-        this._copy('src/routes/gen/gen-cnt-routes.ts', defaultConfig);
+        this._copy("src/routes/routes.ts", defaultConfig);
+        this._copy("src/routes/cnt/gen-cnt-routes.ts", defaultConfig);
 
         // services
-        this._copy('src/services/gen/gen-cnt-api.ts', defaultConfig);
+        this._copy("src/services/cnt/gen-cnt-api.ts", defaultConfig);
+        this._copy("src/services/gen/gen-cnx-api.ts", defaultConfig);
 
         // stores
-        this._copy('src/stores/gen/gen-cnt-store.ts', defaultConfig);
+        this._copy("src/stores/cnt/gen-cnt-store.ts", defaultConfig);
 
         // utils
-        this._copy('src/utils/roles.ts', defaultConfig);
+        this._copy("src/utils/roles.ts", defaultConfig);
 
         // views
-        this._copy('src/views/gen/gen-cnt-form.ts', defaultConfig);
-        this._copy('src/views/gen/gen-cnt-page.tsx', defaultConfig);
+        this._copy("src/views/cnt/gen-cnt-form.ts", defaultConfig);
+        this._copy("src/views/cnt/gen-cnt-page.tsx", defaultConfig);
 
-        this._copy('src/views/layouts/hornet-layout.jsx', defaultConfig);
+        this._copy("src/views/layouts/hornet-layout.jsx", defaultConfig);
 
-        this._copy('src/views/nav/nav-pap-page.jsx', defaultConfig);
+        this._copy("src/views/nav/nav-pap-page.jsx", defaultConfig);
 
-        this._copy('src/views/gen/gen-acb-page.jsx', defaultConfig);
-        this._copy('src/views/gen/gen-aid-page.jsx', defaultConfig);
-        this._copy('src/views/gen/gen-err-page.jsx', defaultConfig);
-        this._copy('src/views/gen/gen-hea-cmp.jsx', defaultConfig);
-        this._copy('src/views/gen/gen-acs-cmp.jsx', defaultConfig);
-        this._copy('src/views/gen/gen-hom-page.tsx', defaultConfig);
-        this._copy('src/views/gen/gen-ddc-page.jsx', defaultConfig);
-        this._copy('src/views/gen/gen-foo-cmp.jsx', defaultConfig);
-        this._copy('src/views/gen/gen-cnt-cmp.jsx', defaultConfig);
-        this._copy('src/views/gen/theme/gen-ter-cmp.jsx', defaultConfig);
+        this._copy("src/views/gen/gen-acb-page.jsx", defaultConfig);
+        this._copy("src/views/gen/gen-aid-page.jsx", defaultConfig);
+        this._copy("src/views/gen/gen-err-page.jsx", defaultConfig);
+        this._copy("src/views/gen/gen-hea-cmp.jsx", defaultConfig);
+        this._copy("src/views/gen/gen-acs-cmp.jsx", defaultConfig);
+        this._copy("src/views/gen/gen-hom-page.tsx", defaultConfig);
+        this._copy("src/views/gen/gen-ddc-page.jsx", defaultConfig);
+        this._copy("src/views/gen/gen-foo-cmp.jsx", defaultConfig);
+        this._copy("src/views/gen/gen-cnt-cmp.jsx", defaultConfig);
+        this._copy("src/views/gen/gen-cnx-page.jsx", defaultConfig);
+        this._copy("src/views/gen/theme/gen-ter-cmp.jsx", defaultConfig);
 
-        this._copy('static/css/theme.css', defaultConfig);
+        this._copy("static/css/theme.css", defaultConfig);
+        this._copy("static/css/auth.css", defaultConfig);
 
-        this._copy('src/views/hornet-app.jsx', defaultConfig);
+        this._copy("src/views/hornet-app.jsx", defaultConfig);
 
         // client/server
-        this._copy('src/client.ts', defaultConfig);
-        this._copy('src/server.ts', defaultConfig);
+        this._copy("src/client.ts", defaultConfig);
+        this._copy("src/server.ts", defaultConfig);
 
         // bouchons
-        this._copy('src/mock/routes.ts', defaultConfig);
-        this._copy('src/mock/data/example.json', defaultConfig);
+        this._copy("src/mock/routes.ts", defaultConfig);
+        this._copy("src/mock/data/example.json", defaultConfig);
 
         // npmignore
-        this._copy('.npmignore');
+        this._copy(".npmignore");
 
         //README.md
-        this._copy('README.md', {
+        this._copy("README.md", {
+            _: _,
+            themeurl: this.themeurl,
+            themeHost: this.themeHost,
+            appname: this.appname,
+            appversion: this.appversion,
+            apptitle: this.apptitle
+        });
+
+        //LICENSE.md
+        this._copy("LICENSE.md", {
             _: _,
             themeurl: this.themeurl,
             themeHost: this.themeHost,
@@ -267,7 +290,7 @@ module.exports = yeoman.Base.extend({
         var useDestKey = destkey || key;
         var answer = answers[key];
         if (!answer) {
-            this.log('Aucune valeur pour : ' + key);
+            this.log("Aucune valeur pour : " + key);
         }
         this[useDestKey] = answer;
         this.config.set(useDestKey, answer);
@@ -292,6 +315,6 @@ module.exports = yeoman.Base.extend({
         );
     },
     _random: function (length) {
-        return crypto.randomBytes(length || 48).toString('hex');
+        return crypto.randomBytes(length || 48).toString("hex");
     }
 });

@@ -1,7 +1,9 @@
 {
-  "applicationTitle": "<%= appname %>",
+  "applicationTitle": "<%= apptitle %>",
   "errorsTitle": "Une erreur est survenue",
+  "applicationLoading": "Chargement de l'application, veuillez patienter ...",
   "authError": "Authentification refusée: l'utilisateur ne possède pas les droits suffisants pour accéder cette page",
+  "techError": "Une erreur technique est survenue",
   "form": {
     "valid": "Valider",
     "validTitle": "Valider la saisie du formulaire",
@@ -66,7 +68,11 @@
     "prevPage": "< Précédent",
     "nextPage": "Suivant >",
     "lastPage": ">>",
-    "displayAll": "Afficher tout"
+    "10": "10",
+    "50": "50",
+    "100": "100",
+    "displayAll": "Afficher tout",
+    "formatDateInvalid": "Le format du champ « {title} » est incorrect."
   },
   "calendar": {
     "agendaTitle": "Agenda",
@@ -176,7 +182,7 @@
     }
   },
   "header": {
-    "logoTitle": "Accueil - ",
+    "logoTitle": "Hornet - Retour vers la page d'accueil",
     "contentTitle": "Aller au contenu de l' ",
     "menuTitle": "Aller au menu de l' ",
     "planTitle": "Plan de l'application l' ",
@@ -191,28 +197,16 @@
   "navigation": {
     "welcome": "Accueil",
     "accessibility": "Accessibilité",
-    "declarationconformity":"Declaration of conformity",
+    "declarationconformity":"Déclaration de conformité",
     "contact": "Contact",
     "plan": "Plan de l'application",
     "help": "Aide",
     "connect": "Connexion",
     "disconnect": "{userLogin} (Déconnexion)",
-    "submenu": "Sous-menu de ",
-    "partenaire": {
-      "gestionDesPartenaires": "Gestion des partenaires",
-      "listeViaRecherche": "Liste (via recherche)",
-      "gestionPartenaire": "Gestion des partenaires",
-      "editionPartenaire": "Editer un partenaire",
-      "creationPartenaire": "Ajouter un partenaire",
-      "fichePartenaire": "Fiche partenaire"
-    },
-    "administration": {
-      "label": "Administration",
-      "secteurs": "Secteurs",
-      "listeSecteurs": "Liste des secteurs",
-      "listeSecteursTitle": "Affiche la liste des secteurs",
-      "repartition": "Répartition"
-    }
+    "submenu": "Sous-menu de "
+  },
+  "application": {
+    "diplonet": "Retour à l'accueil de Diplonet"
   },
   "contactPage": {
     "title": "Contact",

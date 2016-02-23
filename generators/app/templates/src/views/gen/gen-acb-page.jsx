@@ -165,13 +165,6 @@ var AccessibilitePage = React.createClass({
                                     pour augmenter la taille de la police et
                                     <kbd> Ctrl- </kbd>
                                     pour la diminuer.</p>
-                                <p className="texte">Sur les versions antérieures à
-                                    <span lang="en"> Internet explorer </span>
-                                    7 : dans la barre de menu en haut du navigateur, aller sur
-                                    <b> Affichage</b>
-                                    &gt;
-                                    <b>Taille du texte </b>
-                                    et choisir la taille qui vous convient.</p>
 
                                 <h4>Charte graphique</h4>
                                 <p className="texte">La charte graphique a été définie et réalisée en prenant en
@@ -187,30 +180,30 @@ var AccessibilitePage = React.createClass({
                                         <span lang="en"> Internet explorer </span>
                                         :
                                         <em> Favoris ou menu contextuel</em>
-                                        &gt;
+                                    &gt;
                                         <em> Ajouter aux favoris </em>
                                     </li>
                                     <li>Sous
                                         <span lang="en"> Mozilla Firefox </span>
                                         :
                                         <em> Marque-pages </em>
-                                        &gt;
+                                    &gt;
                                         <em> Marquer cette page </em>
                                     </li>
 
                                     <li>Sous Safari
                                         <em> : Signets </em>
-                                        &gt;
+                                    &gt;
                                         <em> Ajouter aux signets </em>
                                     </li>
                                     <li>Sous Opéra
                                         <em> : Signets </em>
-                                        &gt;
+                                    &gt;
                                         <em> Signet vers la page </em>
                                     </li>
                                     <li>Sous Chrome
                                         <em> : Favoris </em>
-                                        &gt;
+                                    &gt;
                                         <em> Ajouter cette page aux favoris </em>
                                     </li>
                                 </ul>
@@ -218,9 +211,9 @@ var AccessibilitePage = React.createClass({
                         </div>
 
                     </div>
+                    </div>
                 </div>
-            </div>
-        );
-    }
-})
+            );
+        }
+    })
 module.exports = AccessibilitePage;

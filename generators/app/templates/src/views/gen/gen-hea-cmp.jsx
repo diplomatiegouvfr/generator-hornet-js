@@ -6,7 +6,7 @@ var logger = utils.getLogger("<%= _.slugify(appname) %>.views.gen.gen-hea-cmp");
 var HornetComponentMixin = require("hornet-js-core/src/mixins/react-mixins");
 var PageInformationsStore = require("hornet-js-core/src/stores/page-informations-store");
 
-var AccessibleComposant = require("src/views/gen/gen-acs-cmp.jsx");
+var AccessibleComponent = require("src/views/gen/gen-acs-cmp");
 
 var Header = React.createClass({
     mixins: [HornetComponentMixin],
@@ -28,12 +28,12 @@ var Header = React.createClass({
 
     _getAccessibleComposant: function () {
 
-        return (<AccessibleComposant
-            themeName={this.state.themeName}
-            linkContactVisible={this.props.linkContactVisible}
-            linkHelpVisible={this.props.linkHelpVisible}
-            applicationTitle={this.props.applicationTitle}
-        />);
+        return (<AccessibleComponent
+                    themeName={this.state.themeName}
+                    linkContactVisible={this.props.linkContactVisible}
+                    linkHelpVisible={this.props.linkHelpVisible}
+                    applicationTitle={this.props.applicationTitle}
+            />);
     },
 
     render: function () {
@@ -41,7 +41,7 @@ var Header = React.createClass({
 
         var applicationTitle = this.props.applicationTitle;
         var messIntl = this.i18n("header");
-        var title = messIntl.logoTitle + applicationTitle;
+        var title = messIntl.logoTitle;
         return (
             <div>
                 {this._getAccessibleComposant()}
@@ -55,7 +55,7 @@ var Header = React.createClass({
                 </header>
             </div>
         );
-    }
+    }    
 });
 
 module.exports = Header;

@@ -2,7 +2,7 @@
   "menu": [
     {
       "text": "navigation.welcome",
-      "url": "/",
+      "url": "/accueil",
       "visibleDansMenu": true,
       "visibleDansPlan": true
     },

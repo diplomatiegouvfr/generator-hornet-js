@@ -4,11 +4,14 @@
   "server": {
     "route": "js1",
     "port": 8888,
+    "portMonitor": 9999,
     "keepAlive": true,
+    "keepAliveTimeout": 15000,
     "maxConnections": 100,
     "timeout": 300000,
     "uploadFileSize": 1000000,
-    "sessionTimeout": 1800000
+    "sessionTimeout": 1800000,
+    "stackTraceLimit": 100
   },
   "cookie": {
     //"domain": null,
@@ -18,7 +21,7 @@
     //"alwaysSetCookie": false
   },
   "themeHost": "<%= themeHost %>",
-  "themeUrl": "<%= themeurl %>",
+  "themeUrl": "<%= themeUrlVariabilise %>",
   "security": {
     "enabled": false,
     "hpp": true,
@@ -52,9 +55,8 @@
         "${themeHost}"
       ],
       "reportOnly": false,
-      "setAllHeaders": false,
-      "disableAndroid": false,
-      "safari5": false
+      "setAllHeaders": true,
+      "disableAndroid": false
     },
     "frameguard": {
       "enabled": true,
@@ -73,41 +75,18 @@
         "ZyXwVu456="
       ],
       "includeSubdomains": true,
-      "reportUri": null
+      "reportUri": null,
+      "reportOnly": false
     },
     "hsts": {
       "enabled": false,
       "maxAge": 10886400000,
-      "includeSubdomains": true,
+      "includeSubDomains": true,
       "preload": false
     },
     "csrf": {
-      "enabled": true,
-      "maxTokensPerSession": 10
+      "enabled": true
     }
-  },
-  "log": {
-    "levels": {
-      "[all]": "INFO"
-      //"hornet-js-core": "TRACE"
-    },
-    "appenders": [
-      {
-        "type": "console",
-        "layout": {
-          "type": "pattern",
-          "pattern": "%[%d{ISO8601}|%x{tid}|%x{user}|%p|%c|%x{fn}|%m%]"
-        }
-      }
-      //        {
-      //          "type": "dateFile",
-      //          "filename": "log/app.log",
-      //          "layout": {
-      //            "type": "pattern",
-      //            "pattern": "%d{ISO8601}|%x{tid}|%x{user}|%p|%c|%x{fn}|%m"
-      //          }
-      //        }
-    ]
   },
   "logClient": {
     "remote": false,
@@ -118,7 +97,7 @@
         //        "layout": {
         //          "type": "pattern",
         //          "pattern": "%p|%c|%m%"
-        //        }
+        //        },
         "layout": {
           "type": "THIN"
         }
@@ -134,19 +113,26 @@
       }
     ]
   },
-  "services": {
-    "host": "<%= _.slugify(servicesurl) %>",
+  "defaultServices": {
+    "host": "<%= servicesurl %>",
     "name": "<%= _.slugify(appname) %>"
   },
   "mock": {
     "enabled": false,
-    "host": "127.0.0.1", //default localhost
-    "routes": "/mock/routes"
+    "routes": "/mock/routes",
+    "defaultServices": { // service mock par defaut : le contexte est toujours "<%= _.slugify(appname) %>/hornet-mock"
+      "host": "http://localhost:${server.port}/" //default localhost:8888
+    },
+    "secteursServices": { // configuration multi-service : exemple de definition d'un mock specifique pour les secteurs
+      "host": "<%= servicesurl %>:${server.port}/",
+      "name": "<%= _.slugify(appname) %>/hornet-mock"
+    }
   },
   "fullSpa": {
-    "enabled": false,
+    "enabled": <%= mode %>,
     "host": "",
-    "name": "/services"
+    "name": "/services",
+    "staticPath": ""
   },
   "authentication": {
     "loginUrl": "/login",

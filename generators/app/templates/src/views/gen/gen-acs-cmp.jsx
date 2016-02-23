@@ -1,4 +1,6 @@
+/** @jsx React.DOM */
 "use strict";
+
 var React = require("react");
 var utils = require("hornet-js-utils");
 var logger = utils.getLogger("<%= _.slugify(appname) %>.views.gen.gen-acs-cmp");
@@ -8,16 +10,17 @@ var AccessibleComposant = React.createClass({
     mixins: [HornetComponentMixin],
 
     propTypes: {
-        lienAideVisible: React.PropTypes.bool,
-        lienContactVisible: React.PropTypes.bool,
-        titreAppli: React.PropTypes.string.isRequired,
-        themeCss: React.PropTypes.object
+        linkHelpVisible: React.PropTypes.bool,
+        linkContactVisible: React.PropTypes.bool,
+        applicationTitle: React.PropTypes.string.isRequired,
+        themeName: React.PropTypes.string
     },
+
 
     render: function () {
         logger.info("VIEW AccessibleBar render");
-        var titreAppli = this.props.titreAppli;
-        var messIntl = this.i18n('header');
+        var applicationTitle = this.props.applicationTitle;
+        var messIntl = this.i18n("header");
 
         var lienContact = (this.props.linkContactVisible === true) ?
             <li><a href={this.genUrl("/contact")}>{messIntl.contact}</a></li>
@@ -25,8 +28,6 @@ var AccessibleComposant = React.createClass({
         var lienAide = (this.props.linkHelpVisible === true) ?
             <li><a href={this.genUrl("/aide")}>{messIntl.help}</a></li>
             : null;
-
-        var applicationTitle = "<%= appname %>";
 
         return (
             <nav id="infos">

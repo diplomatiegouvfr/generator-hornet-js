@@ -19,9 +19,7 @@ var AidePage = React.createClass({
                 <div className="pure-g-r">
                     <div className="pure-u-3-4">
                         <h3>Objet de l'application</h3>
-                        <p className="texte">Cette application permet de donner un aperçu
-                            des éléments intégrés Hornet à travers l'exemple fonctionnel d'un
-                            magasin.</p>
+                        <p className="texte">Cette application a été générée à partir du template hornet-js.</p>
                         <h3>Objet de cette page</h3>
                         <p className="texte">Cette page en particulier permet de
                             visualiser le rendu des balises &lt;h2&gt;, &lt;h3&gt;, &lt;h4&gt;,

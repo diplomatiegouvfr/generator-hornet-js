@@ -1,7 +1,5 @@
 # generator-hornet-js
 
-## Description
-
 Le module Node « generator-hornet-js » contient les éléments de création d'une application Hornet JS. Il est utilisable avec Yeoman.
 
 ## Pré-requis
@@ -54,8 +52,8 @@ Le générateur va vous demander plusieurs informations nécessaires à l'initia
 * ` Titre de l'application ` : le titre de l'application apparaît dans le bandeau de tête et le titre des pages de l'application.
 * ` Description de votre projet ` : un texte court présentant succintement le projet.
 * ` Version de votre projet:` `(1.0.0)` : version du projet (`1.0.0` par défaut).
-* ` Version du framework (hornet-js):` `(5.0.0)` : version du framework hornet-js (`5.0.0` par défaut identique à generator-hornet-js).
-* ` Url du thème: (intranet) ` : l'url du thème à utiliser pour l'application (`http://localhost:7777/5.0.0/intranet` par défaut)
+* ` Version du framework (hornet-js):` `(5.0.X)` : version du framework hornet-js (`5.0.X` par défaut identique à generator-hornet-js).
+* ` Url du thème: (default) ` : l'url du thème à utiliser pour l'application (`http://localhost:7777/5.0.X/default` par défaut)
 * ` URL de base des services de l'application: ` : URL où sont accessibles les services (partie Java Tomcat) de votre application.
 * ` Nom/contexte des services de l'application ` : nom de l'application fournissant les services (partie Java Tomcat) de votre application.
 * ` Version des services de l'application:` `(1.0.0)` : version de l'application fournissant les services (partie Java Tomcat) de votre application. Par défaut le numéro de version est le même que celui donné au début de cette procédure.
@@ -86,7 +84,7 @@ Le processus d'initialisation vous indique ensuite les fichiers créés :
    create src\views\gen\gen-acb-page.jsx
    create src\views\gen\gen-aid-page.jsx
    create src\views\gen\gen-err-page.jsx
-   create src\views\gen\gen-hea-cmp.jsx
+   create src\views\gen\cnt-hea-cmp.jsx
    create src\views\gen\gen-acs-cmp.jsx
    create src\views\gen\gen-hom-page.tsx
    create src\views\gen\gen-ddc-page.jsx
@@ -143,6 +141,6 @@ Puis, utiliser un navigateur web pour y accéder par l'url [http://localhost:888
 
 ## Licence
 
-applitutoriel-service est sous [licence cecill 2.1](./LICENCE.md).
+applitutoriel-service est sous [licence cecill 2.1](./LICENSE.md).
 
-Site web : [![http://www.cecill.info](http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html)](http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html)
+Site web : [http://www.cecill.info](http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html)

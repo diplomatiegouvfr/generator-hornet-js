@@ -1,7 +1,7 @@
 "use strict";
 
 var utils = require("hornet-js-utils");
-var logger = utils.getLogger("applitutoriel.views.gen.gen-acb-ddc");
+var logger = utils.getLogger("<%= _.slugify(appname) %>.views.gen.gen-acb-ddc");
 var React = require("react");
 var HornetComponentMixin = require("hornet-js-core/src/mixins/react-mixins");
 
