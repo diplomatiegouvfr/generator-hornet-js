@@ -1,10 +1,8 @@
-"use strict";
-
 // Bootstrap de lancement de l'application
 // permet la résolution de modules dans des répertoires autres que "node_modules"
 var Module = require("module").Module;
-var fs = require("fs");
-var path = require("path");
+import * as fs from "fs";
+import * as path from "path";
 
 var appDirectory = process.cwd();
 var moduleDirectoriesContainer = [];
@@ -16,7 +14,7 @@ var NODE_MODULES_APP = path.join("node_modules", "app");
 
 
 // on surcharge la méthode de résolution interne nodejs pour gérer d'autres répertoires
-Module._newNodeModulePaths = function (from) {
+Module._newNodeModulePaths = function(from) {
     var paths = [];
     var matched = matchModuleDirectory(from);
 
@@ -34,7 +32,7 @@ function matchModuleDirectory(from) {
     var match = null, len = 0;
     for (var i = 0; i < moduleDirectories.length; i++) {
         var mod = moduleDirectories[i];
-        if (from.indexOf(mod) === 0 && mod.length > len) {
+        if (from.indexOf(mod + path.sep) === 0 && mod.length > len) {
             match = mod;
             len = mod.length;
         }
@@ -71,10 +69,23 @@ function isNodeModule(directory) {
 // Lecture et ajout dans le resolver des répertoires externes déclarés par le package courant
 try {
     var builder = require("./builder.js");
+    var os = require("os");
+    let parentBuilderFile = path.join(process.cwd(), "../", "builder.js")
+
+    if (fs.existsSync(parentBuilderFile)) {
+        let parentBuilderJs = require(parentBuilderFile);
+        if (parentBuilderJs.type === "parent") {
+            if (builder.externalModules && builder.externalModules.enabled && builder.externalModules.directories) {
+                builder.externalModules.directories.push(path.join(process.cwd(), "../"));
+            }
+        }    
+    }
+
     if (builder.externalModules && builder.externalModules.enabled && builder.externalModules.directories && builder.externalModules.directories.length > 0) {
 
-        builder.externalModules.directories.forEach(function (directory) {
+        builder.externalModules.directories.forEach(function(directory) {
             try {
+                directory = directory.replace("~", os.homedir());
                 var stat = fs.statSync(directory);
                 if (stat.isDirectory()) {
 
@@ -83,14 +94,13 @@ try {
                         addModuleDirectoryContainer(path.normalize(path.join(directory, "..")));
                         console.log("MODULE RESOLVER > le répertoire '" + directory + "' est déclaré comme module nodejs");
                         console.log("MODULE RESOLVER > le répertoire '" + (path.normalize(path.join(directory, ".."))) + "' est déclaré comme container de module nodejs");
-
                     }
                     // on vérifie si des répertoires du 1er niveau sont des modules nodejs pour les ajouter eux aussi
                     var files = fs.readdirSync(directory);
                     var moduleFound = false;
-                    files.forEach(function (file) {
-                        var modPath = path.normalize(path.join(directory, file));
-                        if (fs.statSync(modPath).isDirectory(modPath)) {
+                    files.forEach(function(file) {
+                        let modPath = path.normalize(path.join(directory, file));
+                        if (fs.statSync(modPath).isDirectory()) {
                             if (file.indexOf(".") === 0) return;
 
                             if (isNodeModule(modPath)) {
@@ -126,24 +136,31 @@ moduleDirectoriesContainer.forEach((path) => {
 });
 require.main.paths.push(path.join(process.cwd()));
 require.main.paths.push(path.join(process.cwd(), NODE_MODULES_APP));
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // gestion des sourcemap dans les stack nodejs
 require("source-map-support").install();
 
 // autorise le format json5 dans les extensions .json
-require("hornet-js-utils/src/json-loader").allowJSON5();
+import { JSONLoader } from "hornet-js-utils/src/json-loader";
+JSONLoader.allowJSON5();
 
 // auto configuration des logs server
-require("hornet-js-core/src/log/server-log-configurator");
+import { ServerLogConfigurator } from "hornet-js-core/src/log/server-log-configurator";
+ServerLogConfigurator.configure();
 
 // initialisation des infos de l'application courante
-import AppSharedProps = require("hornet-js-utils/src/app-shared-props");
+import { AppSharedProps } from "hornet-js-utils/src/app-shared-props";
 var packageJson = require("./package");
 AppSharedProps.set("appName", packageJson.name);
 AppSharedProps.set("appVersion", packageJson.version);
 AppSharedProps.set("appDescription", packageJson.description);
 AppSharedProps.set("appAuthor", packageJson.author);
 
+// Mise en place des injections de service
+import "./src/injector-context";
+
 // lancement de l'application
-require("src/server");
+import { Server } from "src/server";
+Server.startApplication();

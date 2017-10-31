@@ -1,0 +1,86 @@
+{
+  "contextPath": "#{APPLICATION_CONTEXT_ROOT}",
+  "localeI18n": {
+    "locale": "fr-FR",
+    "lang": "fr"
+  },
+  "cookie": {
+    "httpOnly": true,
+    "secure": false
+  },
+  "security": {
+    "enabled": true,
+    "csp": {
+      "enabled": true,
+      "connectSrc": [
+        "'self'"
+      ],
+      "scriptSrc": [
+        "'self'",
+        "'unsafe-inline'",
+        "'unsafe-eval'"
+      ],
+      "styleSrc": [
+        "'self'",
+        "'unsafe-inline'"
+      ],
+      "fontSrc": [
+        "'self'"
+      ],
+      "imgSrc": [
+        "'self'"
+      ],
+      "formAction": [
+        "'self'"
+      ]
+    },
+      "reportOnly": false
+  },
+  "logClient": {
+    "remote": false,
+    "level": "INFO",
+    "appenders": [
+      {
+        "type": "BrowserConsole",
+        "layout": {
+          "type": "THIN"
+        }
+      }
+    ]
+  },
+  "defaultServices": {
+    "host": "#{DEFAULT_SERVICE_HOST}",
+    "name": "#{SERVICE_CONTEXT_ROOT}"
+  },
+  "secteursServices": {
+    // configuration multi-service : exemple de definition d'un service specifique pour les secteurs
+    "host": "#{DEFAULT_SERVICE_HOST}",
+    "name": "#{SERVICE_CONTEXT_ROOT}"
+  },
+  "mail": {
+    "config": {
+      "host": "#{MAIL_HOST}",
+      "port": #{MAIL_PORT},
+      "secure": #{MAIL_SECURE},
+      "connectionTimeout": #{MAIL_TIMEOUT},
+      "tls": {
+        "rejectUnauthorized": #{MAIL_TLS_REJECT}
+      },
+      "auth": {
+        "user": "#{MAIL_USER}",
+        "pass": "#{MAIL_PASS}"
+      }
+    },
+    "mailReceiver": "#{MAIL_RECEIVER}",
+    "mailSender": "#{MAIL_SENDER}"
+  },
+  "mock": {
+    "enabled": false
+  },
+  "fullSpa": {
+    "enabled": false
+  },
+  "cache": {
+    "enabled": false
+  }
+}

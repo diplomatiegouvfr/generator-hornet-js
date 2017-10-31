@@ -1,320 +1,309 @@
 "use strict";
 var fs = require("fs");
 var path = require("path");
-var yeoman = require("yeoman-generator");
+var Generator = require('yeoman-generator');
 var crypto = require("crypto");
-var _ = require("underscore.string");
-var lodash = require("lodash");
+var slugify = require("slugify");
+var isstring = require("lodash.isstring");
+var yosay = require("yosay");
 
-
-module.exports = yeoman.Base.extend({
+module.exports = Generator.extend({
     constructor: function () {
-        yeoman.Base.apply(this, arguments);
-        this.log("starting");
+        Generator.apply(this, arguments);
+        this.log(yosay("starting"));
 
         var pkg = require("../../package.json");
         this.fmkversion = pkg.version;
-        this.mode = "isomorphic";
+
         this.argument("appname", {type: String, required: false});
+        this.argument("appversion", {type: String, required: false});
+        this.argument("appdescription", {type: String, required: false});
+        this.argument("fmkversion", {type: String, required: false});
+        this.argument("theme", {type: String, required: false});
+        this.argument("themeversion", {type: String, required: false});
+        this.argument("urlservice", {type: String, required: false});
+        this.argument("hostservice", {type: String, required: false});
+        this.argument("fullspa", {type: Boolean, required: false});
     },
     prompting: function () {
+
         var pkg = require("../../package.json"),
             prompts = [],
             defaultAppName = path.basename(process.cwd());
 
         var prompts = [];
-        if (!this.appname) {
-            prompts.push({
-                when: function () { // si le nom n'est pas fourni en paramètre de la commande
-                    return !this.appname;
-                },
-                type: "input",
-                name: "appname",
-                message: "Nom de votre projet",
-                default: this.appname || defaultAppName // Par défaut le nom du dossier
-            });
-        }
+        var _this = this;
+
         prompts.push({
+            when: function () { // si le nom n'est pas fourni en paramètre de la commande
+                return !_this.options.appname;
+            },
             type: "input",
-            name: "apptitle",
-            message: "Titre de l'application"
+            name: "appname",
+            message: "Nom de votre projet",
+            default: this.appname || defaultAppName // Par défaut le nom du dossier
         });
         prompts.push({
+            when: function () {
+                return !_this.options.appversion;
+            },
             type: "input",
-            name: "description",
-            message: "Description de votre projet"
-        });
-        prompts.push({
-            type: "input",
-            name: "version",
+            name: "appversion",
             message: "Version de votre projet",
             default: "1.0.0"
         });
         prompts.push({
+            when: function () {
+                return !_this.options.appdescription;
+            },
+            type: "input",
+            name: "appdescription",
+            message: "Description de votre projet",
+            default: this.appdescription || defaultAppName
+        });
+        prompts.push({
+            when: function () {
+                return !_this.options.fmkversion;
+            },
             type: "input",
             name: "fmkversion",
             message: "Version du framework (hornet-js)",
             default: pkg.version
         });
-         prompts.push({
-         type: "list",
-         name: "mode",
-         message: "Mode applicatif",
-         choices: ["isomorphic", "fullSPA"],
-         default: "isomorphic"
-         });
         prompts.push({
+            when: function () {
+                return !_this.options.theme;
+            },
             type: "input",
-            name: "themeurl",
-            message: "Url du thème",
-            default: "http://localhost:7777/" + pkg.version + "/default"
-        });
-        // Services
-        prompts.push({
-            type: "input",
-            name: "servicesurl",
-            message: "URL de base des services de l'application",
-            default: "http://localhost:8080/"
+            name: "theme",
+            message: "Theme de l'application",
+            default: "hornet-themes-intranet"
         });
         prompts.push({
+            when: function () {
+                return !_this.options.themeversion;
+            },
             type: "input",
-            name: "servicesname",
-            message: "Nom/contexte des services de l'application",
-            default: "mock"
+            name: "themeversion",
+            message: "Version du theme de l'application",
+            default: pkg.version
         });
         prompts.push({
+            when: function () {
+                return !_this.options.hostservice;
+            },
             type: "input",
-            name: "servicesversion",
-            message: "Version des services de l'application",
-            default: function (answers) {
-                return answers.version;
-            }
+            name: "hostservice",
+            message: "Host de la partie service",
+            default: "http://localhost:8080"
+        });
+        prompts.push({
+            when: function () {
+                return !_this.options.urlservice;
+            },
+            type: "input",
+            name: "urlservice",
+            message: "ContextPath de la partie service",
+            default: this.appname + "-services"
+        });
+        prompts.push({
+            when: function () {
+                return !_this.options.fullspa;
+            },
+            type: "input",
+            name: "fullspa",
+            message: "Mode full spa",
+            default: false
         });
 
-        var done = this.async();
-        this.prompt(prompts, function (answers) {
-            if (!this.appname) {
+        return this.prompt(prompts).then( function(answers) {
+
+            if (!this.options.appname) {
                 this._applyParam(answers, "appname", "appname");
+            }else{
+                this._applyOptions("appname", this.options.appname);
             }
-            this._applyParam(answers, "version", "appversion");
-            this._applyParam(answers, "fmkversion", "fmkversion");
-            this._applyParam(answers, "description", "appdescription");
-            this._applyParam(answers, "apptitle", "apptitle");
-            this._applyParam(answers, "mode", "mode");
-
-            // Thème
-            this._applyParam(answers, "themeurl");
-
-            // Détermination du themeHost
-            var tmpHost = answers.themeurl.split("/");
-            var themeHost = tmpHost[0] + "//" + tmpHost[2];
-            this.config.set("themeHost", themeHost);
-            this["themeHost"] = themeHost;
-
-            this["themeUrlVariabilise"] = answers.themeurl.replace(themeHost, "${themeHost}");
-
-           this.log(this.themeHost);
-
-            // Services
-            this._applyParam(answers, "servicesurl");
-            this._applyParam(answers, "servicesname");
-            this._applyParam(answers, "servicesversion");
-
-            done();
+            if (!this.options.appversion) {
+                this._applyParam(answers, "appversion", "appversion");
+            }else{
+                this._applyOptions("appversion", this.options.appversion);
+            }
+            if (!this.options.appdescription) {
+                this._applyParam(answers, "appdescription", "appdescription");
+            }else{
+                this._applyOptions("appdescription", this.options.appdescription);
+            }
+            if (!this.options.fmkversion) {
+                this._applyParam(answers, "fmkversion", "fmkversion");
+            }else{
+                this._applyOptions("fmkversion", this.options.fmkversion);
+            }
+            if (!this.options.theme) {
+                this._applyParam(answers, "theme", "theme");
+            }else{
+                this._applyOptions("theme", this.options.theme);
+            }
+            if (!this.options.themeversion) {
+                this._applyParam(answers, "themeversion", "themeversion");
+            }else{
+                this._applyOptions("themeversion", this.options.themeversion);
+            }
+            if (!this.options.hostservice) {
+                this._applyParam(answers, "hostservice", "hostservice");
+            }else{
+                this._applyOptions("hostservice", this.options.hostservice);
+            }
+            if (!this.options.urlservice) {
+                this._applyParam(answers, "urlservice", "urlservice");
+            }else{
+                this._applyOptions("urlservice", this.options.urlservice);
+            }
+            if (!this.options.fullspa) {
+                this._applyParam(answers, "fullspa", "fullspa");
+            }else{
+                this._applyOptions("fullspa", this.options.fullspa);
+            }
         }.bind(this));
     },
     writing: function () {
-        //builder.js
-        this._copy("builder.js");
+        var defaultConfig = {
+            slugify: slugify,
+            appname: this.appname,
+            appversion: this.appversion,
+            appdescription: this.appdescription,
+            fmkversion: this.fmkversion,
+            theme: this.theme,
+            themeversion: this.themeversion,
+            hostservice: this.hostservice,
+            urlservice: this.urlservice,
+            fullspa: this.fullspa
+        };
 
-        //tsconfig.json
-        this._copy("tsconfig.json");
+        //builder.js
+        this._copy("builder.js", defaultConfig);
 
         //index.ts
         this._copy("index.ts");
 
         // package.json
-        this._copy("_package.json", "package.json", {
-                _: _,
-                appname: this.appname,
-                apptitle: this.apptitle,
-                appversion: this.appversion,
-                appdescription: this.appdescription,
-                fmkversion: this.fmkversion
-            }
-        );
+        this._copy("_package.json", "package.json", defaultConfig);
+
         // config/*
-        this._writingConfig();
+        this._writingConfig(defaultConfig);
+
         // public
         // Attention, ne pas copier l"image unitairement, sinon le proccessing va la corrompre
-        this._copyDir("static/img/");
+        //this._copyDir("static/img/");
+        this._writingStatic(defaultConfig);
 
-        if (this.mode === "fullSPA") {
-            this._copy("static/index.html", "static/index.html", {
-                _: _,
-                themeurl: this.themeurl,
-                appname: this.appname,
-                appversion: this.appversion
-            });
-            this._copy("static/config-spa.json", "static/config-spa.json", {
-                _: _,
-                themeurl: this.themeurl,
-                appname: this.appname,
-                appversion: this.appversion,
-                appdescription: this.appdescription,
-                mode: (this.mode === "fullSPA"),
-                servicesurl: this.servicesurl
-            });
-        }
-
-        // scr
-        this._writingSrc();
+        // src
+        this._writingSrc(defaultConfig);
     },
-    _writingConfig: function () {
-        // config/default.json
-        this._copy("config/default.json", "config/default.json", {
-                _: _,
-                appname: this.appname,
-                appversion: this.appversion,
-                themeurl: this.themeurl,
-                servicesurl: this.servicesurl,
-                servicesversion: this.servicesversion,
-                servicesname: this.servicesname,
-                sessionsecret1: this._random(),
-                sessionsecret2: this._random(),
-                mode: (this.mode === "fullSPA"),
-                themeHost: this.themeHost,
-                themeUrlVariabilise: this.themeUrlVariabilise
-            }
-        );
+    _writingConfig: function (defaultConfig) {
+        // config
+        this._copy("config/**", "config/", defaultConfig);
+
+        this._copy("tsconfig.json", "tsconfig.json", defaultConfig);
+
         // config/navigation.json
-        this._copy("src/resources/navigation.json", "src/resources/navigation.json", {
-                _: _,
-                appname: this.appname,
-                appversion: this.appversion
-            }
-        );
+        this._copy("src/resources/**", "src/resources/", defaultConfig);
 
-        this._copy("config/log4js.json", {});
     },
-    _writingSrc: function () {
-        var defaultConfig = {
-            _: _,
-            appname: this.appname,
-            apptitle: this.apptitle
-        };
+    _writingStatic: function (defaultConfig) {
+        this._copySingle("static/css/**", "static/css/");
+        this._copySingle("static/img/**", "static/img/");
+    },
+    _writingSrc: function (defaultConfig) {
 
         // actions
-        this._copy("src/actions/cnt/gen-cnt-actions.ts", defaultConfig);
+        //this._copy("src/actions/cnt/gen-cnt-actions.ts", defaultConfig);
+        this._copy("src/actions/**", "src/actions/", defaultConfig);
 
-        // dispatcher
-        this._copy("src/dispatcher/app-dispatcher.ts", defaultConfig);
+        // middleware
+        this._copy("src/middleware/**", "src/middleware/", defaultConfig);
 
-        // i18n
-        this._copy("src/i18n/app-i18n-loader.ts", defaultConfig);
-        this._copy("src/resources/messages.json", defaultConfig);
-        this._copy("src/resources/messages-fr-FR.json", defaultConfig);
+        // mock
+        this._copy("src/mock/**", "src/mock/", defaultConfig);
 
         // routes
-        this._copy("src/routes/routes.ts", defaultConfig);
-        this._copy("src/routes/cnt/gen-cnt-routes.ts", defaultConfig);
+        this._copy("src/routes/**", "src/routes/", defaultConfig);
 
         // services
-        this._copy("src/services/cnt/gen-cnt-api.ts", defaultConfig);
-        this._copy("src/services/gen/gen-cnx-api.ts", defaultConfig);
-
-        // stores
-        this._copy("src/stores/cnt/gen-cnt-store.ts", defaultConfig);
+        this._copy("src/services/**", "src/services/", defaultConfig);
 
         // utils
-        this._copy("src/utils/roles.ts", defaultConfig);
+        this._copy("src/utils/**", "src/utils/", defaultConfig);
 
         // views
-        this._copy("src/views/cnt/gen-cnt-form.ts", defaultConfig);
-        this._copy("src/views/cnt/gen-cnt-page.tsx", defaultConfig);
+        this._copy("src/views/**", "src/views/", defaultConfig);
 
-        this._copy("src/views/layouts/hornet-layout.jsx", defaultConfig);
-
-        this._copy("src/views/nav/nav-pap-page.jsx", defaultConfig);
-
-        this._copy("src/views/gen/gen-acb-page.jsx", defaultConfig);
-        this._copy("src/views/gen/gen-aid-page.jsx", defaultConfig);
-        this._copy("src/views/gen/gen-err-page.jsx", defaultConfig);
-        this._copy("src/views/gen/gen-hea-cmp.jsx", defaultConfig);
-        this._copy("src/views/gen/gen-acs-cmp.jsx", defaultConfig);
-        this._copy("src/views/gen/gen-hom-page.tsx", defaultConfig);
-        this._copy("src/views/gen/gen-ddc-page.jsx", defaultConfig);
-        this._copy("src/views/gen/gen-foo-cmp.jsx", defaultConfig);
-        this._copy("src/views/gen/gen-cnt-cmp.jsx", defaultConfig);
-        this._copy("src/views/gen/gen-cnx-page.jsx", defaultConfig);
-        this._copy("src/views/gen/theme/gen-ter-cmp.jsx", defaultConfig);
-
-        this._copy("static/css/theme.css", defaultConfig);
-        this._copy("static/css/auth.css", defaultConfig);
-
-        this._copy("src/views/hornet-app.jsx", defaultConfig);
-
-        // client/server
+        // client/server/injector
         this._copy("src/client.ts", defaultConfig);
         this._copy("src/server.ts", defaultConfig);
-
-        // bouchons
-        this._copy("src/mock/routes.ts", defaultConfig);
-        this._copy("src/mock/data/example.json", defaultConfig);
+        this._copy("src/injector-context.ts", defaultConfig);
 
         // npmignore
         this._copy(".npmignore");
 
         //README.md
-        this._copy("README.md", {
-            _: _,
-            themeurl: this.themeurl,
-            themeHost: this.themeHost,
-            appname: this.appname,
-            appversion: this.appversion,
-            apptitle: this.apptitle
-        });
+        this._copy("README.md", defaultConfig);
 
-        //LICENSE.md
-        this._copy("LICENSE.md", {
-            _: _,
-            themeurl: this.themeurl,
-            themeHost: this.themeHost,
-            appname: this.appname,
-            appversion: this.appversion,
-            apptitle: this.apptitle
-        });
+        //index
+        this._copy("static/index.html", defaultConfig);
+
+        //config spa
+        this._copy("static/config-spa.json", defaultConfig);
     },
 
     _applyParam: function (answers, key, destkey) {
         var useDestKey = destkey || key;
         var answer = answers[key];
         if (!answer) {
-            this.log("Aucune valeur pour : " + key);
+            this.log(yosay("Aucune valeur pour : " + key));
         }
         this[useDestKey] = answer;
         this.config.set(useDestKey, answer);
     },
-    _copyDir: function (path) {
-        this.directory(path);
+    _applyOptions: function (key, value) {
+        this[key] = value;
+        this.config.set(key, value);
     },
+    /*
+     _copyDir: function (path) {
+     this.directory(path);
+     },*/
     _copy: function (fromPath, toPath, config) {
-        var copyForm = fromPath, copyTo = toPath, conf = config;
+        var copyFrom = fromPath, copyTo = toPath, conf = config;
         if (arguments.length === 1) {
-            copyTo = copyForm;
+            copyTo = copyFrom;
             conf = {};
-        } else if (arguments.length === 2 && !lodash.isString(config)) {
-            copyTo = copyForm;
+        } else if (arguments.length === 2 && !isstring(config)) {
+            copyTo = copyFrom;
             conf = toPath;
         }
 
         this.fs.copyTpl(
-            this.templatePath(copyForm),
+            this.templatePath(copyFrom),
             this.destinationPath(copyTo),
             conf
         );
     },
+    _copySingle: function (fromPath, toPath) {
+        var copyFrom = fromPath, copyTo = toPath;
+        if (arguments.length === 1) {
+            copyTo = copyFrom;
+        }
+        this.fs.copy(
+            this.templatePath(copyFrom),
+            this.destinationPath(copyTo)
+        );
+    },
+
     _random: function (length) {
         return crypto.randomBytes(length || 48).toString("hex");
+    },
+
+    install: function () {
+        this.installDependencies();
     }
 });

@@ -1,42 +1,38 @@
 {
-  "themeUrl": "<%= themeurl %>",
+  "contextPath": "<%= slugify(appname) %>-spa",
   "fullSpa": {
-    "enabled": <%= mode %>,
-    "host": "<%= servicesurl %>",
-    "name": "<%= _.slugify(appname) %>-service",
-    "staticPath": ""
+    "enabled": true,
+    "host": "http://localhost/",
+    "name": "<%= slugify(appname) %>-service"
   },
-  "dispatcher": {
-    "stores": {
-      "PageInformationStore": {
-        "currentUser": {
-          "name": "admin",
-          "roles": [
-            {
-              "id": 1,
-              "name": "<%= _.slugify(appname) %>_ADMIN"
-            },
-            {
-              "id": 2,
-              "name": "<%= _.slugify(appname) %>_USER"
-            }
-          ]
+  "services": {
+    "host": "http://localhost/",
+    "name": "<%= slugify(appname) %>-service"
+  },
+  "themeName": "<%= theme %>",
+  "localeI18n": {
+    "locale": "fr-FR",
+    "lang": "fr"
+  },
+  "logClient": {
+    "remote": false,
+    "level": "DEBUG",
+    "appenders": [
+      {
+        "type": "BrowserConsole",
+        "layout": {
+          "type": "THIN"
         }
       },
-      "NavigationBaseStore": {
-        "menuItems": []
+      {
+        "type": "Ajax",
+        "layout": {
+          "type": "BASIC"
+        },
+        "threshold": 100,
+        "timeout": 3000,
+        "url": "/log"
       }
-    }
-  },
-  "locale": "fr-FR",
-  "mode": "development",
-  "AppSharedProps": {
-    "appName": "<%= appname %>",
-    "appVersion": "<%= appversion %>",
-    "appDescription": "<%= appdescription %>",
-    "appAuthor": "MAEDI",
-    "loginUrl": "/login",
-    "logoutUrl": "/logout",
-    "welcomePageUrl": "/accueil"
+    ]
   }
 }

@@ -1,43 +1,26 @@
-"use strict";
-import IRoutes = require("hornet-js-core/src/routes/router-interfaces");
-import utils = require("hornet-js-utils");
-import fvaNS = require("hornet-js-core/src/actions/form-validation-action");
+import { Send } from "src/actions/cnt/gen-cnt-actions";
+import { ContactPage } from "src/views/cnt/gen-cnt-page";
+import { AbstractRoutes, PageRouteInfos, DataRouteInfos, PUBLIC_ROUTE } from "hornet-js-core/src/routes/abstract-routes";
+import { URL_CONTACT, URL_CONTACT_ENVOYER } from "src/utils/urls";
+import { ContactServiceImpl } from "src/services/page/cnt/contact-service-page-impl";
+import { ContactServiceDataImpl } from "src/services/data/cnt/contact-service-data-impl";
 
-import actionsContact = require("src/actions/cnt/gen-cnt-actions");
-import ContactForm = require("src/views/cnt/gen-cnt-form");
-import Roles = require("src/utils/roles");
-import contactPage = require("src/views/cnt/gen-cnt-page");
+export default class ContactRoutes extends AbstractRoutes {
+    constructor() {
+        super();
 
-var logger = utils.getLogger("<%= _.slugify(appname) %>.routes.gen.ren.cnt-routes");
+        /* Route des pages */
+        this.addPageRoute("/",
+            () => new PageRouteInfos(ContactPage, null, ContactServiceImpl),
+            PUBLIC_ROUTE
+        );
 
-class ContactRoutes implements IRoutes.IRoutesBuilder {
+        /* Route des datas */
 
-    buildViewRoutes(match:IRoutes.MatchViewFn) {
-        logger.info("Initialisation des routes view de la page Contact");
-        match("/", () => {
-            logger.info("routes CONTACT / ROUTER VIEW");
-            return {
-                composant: contactPage
-            };
-        });
-    }
-
-    buildDataRoutes(match:IRoutes.MatchDataFn){
-
-        logger.info("Initialisation des routes data de la page Contact");
-
-        match("/envoyer", (context) => {
-            logger.info("routes CONTACT envoyer ROUTER DATA");
-            var formData = context.req.body;
-            var formClass = ContactForm(context.actionContext.i18n("contactPage.form"));
-            var actionValider = new fvaNS.FormValidationAction().withApplicationForm(<fvaNS.NewsFormValidation> new formClass({
-                data: formData
-            })).dispatchIfFormNotValid("CONTACT_RECEIVE_FORM_DATA");
-            return {
-                actions: [actionValider, new actionsContact.Send().withPayload(formData)]
-            };
-        }, "post");
+        this.addDataRoute(URL_CONTACT_ENVOYER,
+            () => new DataRouteInfos(Send, null, ContactServiceDataImpl),
+            PUBLIC_ROUTE,
+            "post"
+        );
     }
 }
-
-export = ContactRoutes;

@@ -1,89 +1,74 @@
-"use strict";
-// En tout premier: transpileur jsx -> js
-require("node-jsx").install({
-    extension: ".jsx",
-    harmony: true
-});
+// L'import de hornet-js-utils doit être fait le plus tôt possible
+import { Utils } from "hornet-js-utils";
+import { Logger } from "hornet-js-utils/src/logger";
+import * as fs from "fs";
+import { I18nLoader } from "hornet-js-core/src/i18n/i18n-loader"
+import { ServerConfiguration } from "hornet-js-core/src/server-conf";
+import * as HornetServer from "hornet-js-core/src/server";
+import { HornetApp } from "src/views/layouts/hornet-app";
+import { HornetLayout } from "src/views/layouts/hornet-layout";
+import { ErrorPage } from "hornet-js-react-components/src/widget/component/error-page";
+import { Routes } from "src/routes/routes";
+import {
+    PageRenderingMiddleware,
+    UnmanagedViewErrorMiddleware
+} from "hornet-js-react-components/src/middleware/component-middleware";
+import * as HornetMiddlewares from "hornet-js-core/src/middleware/middlewares";
+import { AuthenticationAPIMiddleware } from "src/middleware/authentication-api";
 
-// L'import du logger doit être fait le plus tôt possible
-import utils = require("hornet-js-utils");
-import Server = require("hornet-js-core/src/server");
-import ServerConfiguration = require("hornet-js-core/src/server-conf");
+import { HornetMiddlewareList } from "hornet-js-core/src/middleware/middlewares";
 
-import Routes = require("src/routes/routes");
-import React = require("react");
-import fs = require("fs");
+import * as Menu from "src/resources/navigation.json";
 
-import AppI18nLoader = require("src/i18n/app-i18n-loader");
-var Menu = require("src/resources/navigation");
+const logger: Logger = Utils.getLogger("<%= slugify(appname) %>.server");
 
-var HornetApp = require("src/views/hornet-app");
-var HornetAppReact = React.createFactory(HornetApp);
+export class Server {
 
-var HornetLayout = require("src/views/layouts/hornet-layout");
-var HornetLayoutReact = React.createFactory(HornetLayout);
-var HornetErrorComponent = require("src/views/gen/gen-err-page");
+    static configure(): ServerConfiguration {
 
-// Enregistrement des stores
-import AppDispatcher = require("src/dispatcher/app-dispatcher");
+        let configServer: ServerConfiguration = {
+            serverDir: __dirname,
+            staticPath: "../static",
+            appComponent: HornetApp,
+            layoutComponent: HornetLayout,
+            errorComponent: ErrorPage,
+            defaultRoutesClass: new Routes(),
+            sessionStore: null, // new RedisStore({host: "localhost",port: 6379,db: 2,pass: "RedisPASS"}),
+            routesLoaderPaths: ["src/routes/"],
+            /*Directement un flux JSON >>internationalization:require("./i18n/messages-fr-FR.json"),*/
+            /*Sans utiliser le système clé/valeur>> internationalization:null,*/
+            internationalization: new I18nLoader(),
+            menuConfig: (<any> Menu).menu,
+            loginUrl: Utils.config.get("authentication.loginUrl"),
+            logoutUrl: Utils.config.get("authentication.logoutUrl"),
+            welcomePageUrl: Utils.config.get("welcomePage"),
+            publicZones: [
+                Utils.config.get("welcomePage")
+            ]
+        };
 
-function routeLoader(name) {
-    return require("src/routes/" + name);
+        const key = Utils.config.getOrDefault("server.https.key", false);
+        const cert = Utils.config.getOrDefault("server.https.cert", false);
+        if (key && cert) {
+            configServer.httpsOptions = {
+                key: fs.readFileSync(key, "utf8"),
+                cert: fs.readFileSync(cert, "utf8"),
+                passphrase: Utils.config.get("server.https.passphrase")
+            };
+        }
+        return configServer;
+    }
+
+    static middleware(): HornetMiddlewareList {
+        let hornetMiddlewareList = new HornetMiddlewares.HornetMiddlewareList()
+            .addAfter(PageRenderingMiddleware, HornetMiddlewares.UserAccessSecurityMiddleware)
+            .addAfter(UnmanagedViewErrorMiddleware, HornetMiddlewares.DataRenderingMiddleware);
+        hornetMiddlewareList.addAfter(AuthenticationAPIMiddleware, HornetMiddlewares.ChangeI18nLocaleMiddleware);
+        return hornetMiddlewareList;
+    }
+
+    static startApplication() {
+        let server = new HornetServer.Server(Server.configure(), Server.middleware());
+        server.start();
+    }
 }
-
-var appDispatcher = new AppDispatcher().getDispatcher();
-
-var configServer:ServerConfiguration = {
-    serverDir: __dirname,
-    staticPath: "../static",
-    appComponent: HornetAppReact,
-    layoutComponent: HornetLayoutReact,
-    errorComponent: HornetErrorComponent,
-    defaultRoutesClass: new Routes(),
-    sessionStore: null, // new RedisStore({host: "localhost",port: 6379,db: 2,pass: "RedisPASS"}),
-    routesLoaderfn: routeLoader,
-    /*Directement un flux JSON >>internationalization:require("./i18n/messages-fr-FR.json"),*/
-    /*Sans utiliser le système clé/valeur>> internationalization:null,*/
-    internationalization: new AppI18nLoader(),
-    dispatcher: appDispatcher,
-    menuConfig: Menu.menu,
-    loginUrl: utils.config.get("authentication.loginUrl"),
-    logoutUrl: utils.config.get("authentication.logoutUrl"),
-    welcomePageUrl: utils.config.get("welcomePage"),
-    publicZones: [
-        utils.config.get("welcomePage")
-    ]
-};
-
-var key = utils.config.getOrDefault("server.https.key", false);
-var cert = utils.config.getOrDefault("server.https.cert", false);
-if (key && cert) {
-    configServer.httpsOptions = {
-        key: fs.readFileSync(key, "utf8"),
-        cert: fs.readFileSync(cert, "utf8"),
-        passphrase: utils.config.get("server.https.passphrase")
-    };
-}
-
-import HornetMiddlewares = require("hornet-js-core/src/middleware/middlewares")
-var hornetMiddlewareList = new HornetMiddlewares.HornetMiddlewareList();
-/*
-var middlewares = [
-    HornetMiddlewares.LoggerTIDMiddleware,
-    HornetMiddlewares.SecurityMiddleware,
-    HornetMiddlewares.WelcomePageRedirectMiddleware,
-    HornetMiddlewares.StaticPathMiddleware,
-    HornetMiddlewares.BodyParserJsonMiddleware,
-    HornetMiddlewares.BodyParserUrlEncodedMiddleware,
-    HornetMiddlewares.MockManagerMiddleware,
-    HornetMiddlewares.SessionMiddleware,
-    HornetMiddlewares.LoggerUserMiddleware,
-    HornetMiddlewares.CsrfMiddleware,
-    HornetMiddlewares.MulterMiddleware,
-    HornetMiddlewares.RouterDataMiddleware,
-    HornetMiddlewares.RouterViewMiddleware,
-    HornetMiddlewares.ErrorMiddleware
-];
-*/
-var server = new Server(configServer, hornetMiddlewareList);
-server.start();

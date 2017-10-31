@@ -1,6 +1,10 @@
 {
-  "contextPath": "<%= _.slugify(appname) %>",
+  "contextPath": "<%= slugify(appname) %>",
   "welcomePage": "/accueil",
+  "localeI18n": {
+    "locale": "fr-FR",
+    "lang": "fr"
+  },
   "server": {
     "route": "js1",
     "port": 8888,
@@ -10,49 +14,82 @@
     "maxConnections": 100,
     "timeout": 300000,
     "uploadFileSize": 1000000,
+    "uploadAntivirus": false,
     "sessionTimeout": 1800000,
-    "stackTraceLimit": 100
+    "stackTraceLimit": 100,
+    "bodyParserLimit": "50mb"
+    /*
+    "https": {
+      "cert": "c:/home/workspace/Hornet.js/5.1.0/<%= slugify(appname) %>/config/cert/cert.pem",
+      "key": "c:/home/workspace/Hornet.js/5.1.0/<%= slugify(appname) %>/config/cert/key.pem",
+      "passphrase": "password"
+    }
+    //ex : openssl req -x509 -sha256 -newkey rsa:2048 -keyout key.pem -out cert.pem -days XXX
+    */
   },
+  /*
+  "keystore": {
+    // Autorités de certification
+    "CAs": [
+      "/path/to/igca.pem"
+    ],
+
+    // Cas d'authentification SSL
+    "CERTs" : [
+      "/path/to/client/certificate/in/pem/format"
+    ],
+    "KEYs": [
+      {
+        "file": "/path/to/client/private/key/in/pem/format",
+        "passphrase": "abcdefgh"
+      }
+    ],
+
+
+    // Cas d'un conteneur PKCS12
+    "PKCS12": {
+      "file": "/path/to/pkcs12",
+      "passphrase": "abcdefgh"
+    }
+  },
+  */
   "cookie": {
-    //"domain": null,
-    //"path": null,
     "httpOnly": true,
-    "secure": false
-    //"alwaysSetCookie": false
+    "secure": true
   },
-  "themeHost": "<%= themeHost %>",
-  "themeUrl": "<%= themeUrlVariabilise %>",
+  "themeName": "<%= slugify(theme) %>",
+  "antivirus" : {
+    "port" : 3310,
+    "host" : "localhost",
+    "timeout" : 60000
+  },
   "security": {
-    "enabled": false,
+    "enabled": true,
     "hpp": true,
     "ienoopen": true,
     "noSniff": true,
     "csp": {
       "enabled": true,
-      "defaultSrc": [
-        "'self'",
-        "'unsafe-inline'",
-        "'unsafe-eval'",
-        "${themeHost}"
+      "connectSrc": [
+        "'self'"
       ],
       "scriptSrc": [
         "'self'",
         "'unsafe-inline'",
-        "'unsafe-eval'",
-        "${themeHost}"
+        "'unsafe-eval'"
       ],
-      "styleSrc":[
+      "styleSrc": [
         "'self'",
-        "'unsafe-inline'",
-        "${themeHost}"
+        "'unsafe-inline'"
       ],
-      "fontSrc":[
-        "'self'",
-        "${themeHost}"
+      "fontSrc": [
+        "'self'"
       ],
-      "imgSrc":[
-        "'self'",
-        "${themeHost}"
+      "imgSrc": [
+        "'self'"
+      ],
+      "formAction": [
+        "'self'"
       ],
       "reportOnly": false,
       "setAllHeaders": true,
@@ -114,22 +151,29 @@
     ]
   },
   "defaultServices": {
-    "host": "<%= servicesurl %>",
-    "name": "<%= _.slugify(appname) %>"
+    "host": "<%= hostservice %>",
+    "name": "<%= urlservice %>"
   },
-  "mock": {
-    "enabled": false,
-    "routes": "/mock/routes",
-    "defaultServices": { // service mock par defaut : le contexte est toujours "<%= _.slugify(appname) %>/hornet-mock"
-      "host": "http://localhost:${server.port}/" //default localhost:8888
-    },
-    "secteursServices": { // configuration multi-service : exemple de definition d'un mock specifique pour les secteurs
-      "host": "<%= servicesurl %>:${server.port}/",
-      "name": "<%= _.slugify(appname) %>/hornet-mock"
+  "mail": {
+    "config": {
+      "host": "127.0.0.1",
+      "port": 25,
+      "secure": false,
+      "connectionTimeout": 20000,
+      "tls": {
+        "rejectUnauthorized": false
+      },
+      "auth": {
+        "user": "user",
+        "pass": "pass"
+      }
     }
   },
+  "mock": {
+    "enabled": false
+  },
   "fullSpa": {
-    "enabled": <%= mode %>,
+    "enabled": <%= fullspa %>,
     "host": "",
     "name": "/services",
     "staticPath": ""

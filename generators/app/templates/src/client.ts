@@ -1,100 +1,68 @@
-"use strict";
+import { Utils } from "hornet-js-utils";
+import { Logger } from "hornet-js-utils/src/logger";
+import { Client } from "hornet-js-core/src/client";
+import { Routes } from "src/routes/routes";
+import { HornetApp } from "src/views/layouts/hornet-app";
+import { ErrorPage } from "hornet-js-react-components/src/widget/component/error-page";
+import { ReactClientInitializer } from "hornet-js-react-components/src/react/react-client";
 
-import N = require("hornet-js-core/src/routes/notifications");
+(function startClient() {
+    const logger: Logger = Utils.getLogger("<%= slugify(appname) %>.client");
 
-// Polyfill internationalisation
-if (!(<any>window).Intl) {
-    (<any>require).ensure(["intl"], (require) => {
-        (<any>window).Intl = require("intl");
-        // locale data should be also included here...
-        startClient();
-    });
-} else {
-    startClient();
-}
-function startClient() {
-    // L'import du logger doit être fait le plus tôt possible
-
-    var utils = require("hornet-js-utils");
-    var Client = require("hornet-js-core/src/client");
-
-    var logger = utils.getLogger("<%= _.slugify(appname) %>.client");
-
-    var Routes = require("src/routes/routes");
-    var AppDispatcher = require("src/dispatcher/app-dispatcher");
-    var React = require("react");
-
-    var SimpleAction = require("hornet-js-core/src/actions/simple-action");
-
-    function routeLoader(name:string, callback:any) {
-        logger.info("routeLoader(" + name + ")");
+    function routeLoader(name: string, callback: any) {
+        logger.info("routeLoaderClient(" + name + ")");
         // WEBPACK_AUTO_GENERATE_CLIENT_ROUTE_LOADING
 
         return null;
     }
 
-    /**
-     * Exemple d'implémentation d'une fonction gérant les erreurs pouvant se produire lors de l'exécution d"une action dans une vue
-     * @param context
-     * @param payload
-     * @param done
-     */
-    function actionErrorHandler(context, payload, done) {
-        if (payload.err) {
-            logger.error("actionErrorHandler error");
-            var textNotif:string = context.formatMsg(context.i18n("error.message.ER-CL-CLI-01"), {
-                "error": payload.err.lastError
-            });
-            var notifs:N.Notifications = N.Notifications.makeSingleNotification("ACTION_ERREUR_" + payload.err.lastError, textNotif);
-
-            new SimpleAction(SimpleAction.EMIT_ERR_NOTIFICATION)
-                .withContext(context)
-                .withPayload(notifs)
-                .promise(<any>{}).then(done, done);
-        } else {
-            done();
-        }
-    }
-
     try {
         (<any>Error).stackTraceLimit = Infinity;
 
-        var HornetApp = require("src/views/hornet-app");
-        var HornetAppReact = React.createFactory(HornetApp);
-        var ErreurPage = require("src/views/gen/gen-err-page");
-
-        var appDispatcher = new AppDispatcher(actionErrorHandler).getDispatcher();
-
-        var configClient = {
-            appComponent: HornetAppReact,
-            errorComponent: ErreurPage,
+        let configClient = {
+            appComponent: HornetApp,
+            errorComponent: ErrorPage,
             routesLoaderfn: routeLoader,
             defaultRoutesClass: new Routes(),
-            dispatcher: appDispatcher,
             directorClientConfiguration: {
                 html5history: true,
                 strict: false,
                 convert_hash_in_init: false,
                 recurse: false,
-                notfound: function () {
+                notfound: function() {
                     logger.error("Erreur. Cette route n'existe pas :'" + this.path + "'");
+                }
+            },
+            onbeforeunload:function() {
+                console.log(Utils.getCls("hornet.navigateData"));
+                // window.HornetCLS["hornet.navigateData"] = Utils.getCls("hornet.navigateData");
+                // Utils.setCls("hornet.navigateData", Utils.getCls("hornet.navigateData"));
+                if(Utils.getCls("hornet.navigateData") && !_.isUndefined(Utils.getCls("hornet.navigateData"))) {
+                    window.localStorage.setItem("hornet.navigateData", JSON.stringify(Utils.getCls("hornet.navigateData")));
+                }
+            },
+            onload: function() {
+                if(window.localStorage.getItem("hornet.navigateData")) {
+                    window.HornetCLS["hornet.navigateData"] = JSON.parse(window.localStorage.getItem("hornet.navigateData"));
+                    window.localStorage.removeItem("hornet.navigateData");
                 }
             }
         };
 
         // On supprime le spinner de chargement de l'application
         // Cela ne gêne pas React car il est en dehors de sa div "app"
-        var readyCallback = function () {
+        let readyCallback = function() {
             var appLoading = document.getElementById("firstLoadingSpinner");
             if (appLoading) {
                 appLoading.parentNode.removeChild(appLoading);
             }
         };
 
-        Client.initAndStart(configClient, readyCallback).fail((err) => {
-            logger.error("Erreur lors du chargement de l'appli côté client (initAndStart)", err);
-        });
+        let clientInit:ReactClientInitializer = new ReactClientInitializer(configClient.appComponent, readyCallback);
+
+        Client.initAndStart(configClient, clientInit);
     } catch (exc) {
         logger.error("Erreur lors du chargement de l'appli côté client (Exception)", exc);
     }
-}
+
+})();

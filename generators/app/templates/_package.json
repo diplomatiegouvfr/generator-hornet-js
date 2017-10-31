@@ -1,7 +1,6 @@
 {
-  "name": "<%= _.slugify(appname) %>",
+  "name": "<%= slugify(appname) %>",
   "version": "<%= appversion %>",
-  "license": "CECILL-2.1",
   "main": "index.js",
   "description": "<%= appdescription %>",
   "tsDefinitionDependencies": {
@@ -9,29 +8,32 @@
     "hornet-js-utils-dts": "<%= fmkversion %>",
     "hornet-js-core-dts": "<%= fmkversion %>",
     "hornet-js-components-dts": "<%= fmkversion %>",
-    "hornet-js-cas-dts": "<%= fmkversion %>"
+    "hornet-js-react-components-dts": "<%= fmkversion %>",
+    "hornet-js-passport-dts": "<%= fmkversion %>",
+    "hornet-js-test-dts": "<%= fmkversion %>"
   },
   "appDependencies": {
+    "<%= theme %>": "<%= themeversion %>",
     "hornet-js-components": "<%= fmkversion %>",
+    "hornet-js-react-components": "<%= fmkversion %>",
     "hornet-js-core": "<%= fmkversion %>",
-    "hornet-js-ts-typings": "<%= fmkversion %>",
     "hornet-js-utils": "<%= fmkversion %>",
+    "hornet-js-passport": "<%= fmkversion %>",
     "connect-flash": "0.1.1",
-    "node-jsx": "0.13.3",
     "passport": "0.2.1",
     "passport-local": "1.0.0",
-    "sha1": "1.1.1"
+    "sha1": "1.1.1",
+    "jsonwebtoken": "7.3.0",
+    "chart.js": "2.6.0"
   },
-  "buildAndTestDependencies": {
-    "chai": "3.5.0",
-    "chai-jquery": "2.0.0",
-    "cheerio": "0.19.0",
-    "sinon": "1.17.3",
-    "sinon-chai": "2.8.0"
+  "buildDependencies": {
+  },
+  "testDependencies": {
+    "hornet-js-test": "<%= fmkversion %>"
   },
   "scripts": {
     "init-dev": "hb install",
     "start": "node index.js"
   },
-  "author": "MAEDI"
+  "author": "MEAE - Ministère de l'Europe et des Affaires étrangères"
 }

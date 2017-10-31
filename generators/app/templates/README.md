@@ -1,20 +1,20 @@
-<%= apptitle %> <%= appversion %>
+<%= appname %> <%= appversion %>
 ===============
 
 
 # Prérequis
 
-* NodeJS 4.0
+* NodeJS 6.9
 * hornet-js-builder installé en global:
 
 
     $ npm install -g hornet-js-builder
 
-* checkout du projet `<%= _.slugify(appname) %>`
+* checkout du projet `<%= slugify(appname) %>`
 
 # Initialisation
 
-Se positionner dans le répertoire du projet `<%= _.slugify(appname) %>` et lancer la commande:
+Se positionner dans le répertoire du projet `<%= slugify(appname) %>` et lancer la commande:
 
     $ hb install
 
@@ -42,7 +42,7 @@ se fasse via ce dernier.
 
 # Vérification
 
-Vous pouvez accéder à l'application depuis l'url [http://localhost:8888/<%= _.slugify(appname) %>/](http://localhost:8888/<%= _.slugify(appname) %>)
+Vous pouvez accéder à l'application depuis l'url [http://localhost:8888/<%= slugify(appname) %>/](http://localhost:8888/<%= slugify(appname) %>)
 
 # Fichier de configuration de l'application : default.json
 
@@ -60,11 +60,9 @@ Ce fichier ne doit pas être modifié, excepté pour le log console. Les modific
 
 ```javascript
 {
-  "contextPath": "<%= _.slugify(appname) %>",
+  "contextPath": "<%= slugify(appname) %>",
   "welcomePage": "/accueil",
-  "themeHost": "<%= themeHost %>",
-  "themeUrl": "<%= themeurl %>"
-  ...
+  ...<
 }
 
 ```
@@ -163,8 +161,7 @@ Ce bloc contient l'ensemble des paramètres destinés à la configuration de hel
       "defaultSrc": [
         "'self'",
         "'unsafe-inline'",
-        "'unsafe-eval'",
-        "<%= themeurl %>"
+        "'unsafe-eval'"
       ],
       "scriptSrc": [
         "'self'",
@@ -244,7 +241,7 @@ Déclaration des appenders :
 | Paramètre | Description | Valeur |
 |-----------|-------------|--------|
 |type|Type d'appender|*file* pour un fichier simple<br/>*dateFile* pour un fichier contenant la date<br/>*console* ...|
-|filename| Chemin absolu ou relatif au lancement du fichier de log | /var/log/nodejs/<%= _.slugify(appname) %>/<%= _.slugify(appname) %>-1.log|
+|filename| Chemin absolu ou relatif au lancement du fichier de log | /var/log/nodejs/<%= slugify(appname) %>/<%= slugify(appname) %>-1.log|
 |pattern| Présent pour les types *dateFile* <br />Permet de donner un pattern de date qui sera ajouté au nom du fichier.|-yyyy-MM-dd|
 |layout.type| Type d'affichage des messages|pattern|
 |layout.pattern| Schéma d'affichage des messages |"%[%d{ISO8601}|%x{tid}|%x{user}|%p|%c|%x{fn}|%m%]"|
@@ -344,8 +341,8 @@ Type Ajax :
 
 | Paramètre | Description | Valeur |
 |-----------|-------------|--------|
-|services.host| URL de déploiement du module <%= _.slugify(appname) %>-service| [Protocol]://[host]:[port] |
-|services.name| Nom de déploiement des services|<%= _.slugify(appname) %>|
+|services.host| URL de déploiement du module <%= slugify(appname) %>-service| [Protocol]://[host]:[port] |
+|services.name| Nom de déploiement des services|<%= slugify(appname) %>|
 
 ```javascript
 "mock": {
@@ -416,5 +413,32 @@ Note : Il ne s'agit pas d'une configuration à proprement parler de Hornet mais 
 "cache": {
     "enabled": true,
     "timetolive": 60
+  }
+```
+
+## Configuration des mails
+
+| Paramètre | Description | Valeur |
+|-----------|-------------|--------|
+|config|Object de configuration pour nodeMailer|https://nodemailer.com/smtp/|
+|mailRecever|Mail servant de destinataire à l'envoi de mail||
+
+```javascript
+"mail": {
+    "config": {
+      "host": "127.0.0.1",
+      "port": 25,
+      "secure": false,
+      "connectionTimeout": 20000,
+      "tls": {
+        "rejectUnauthorized": false
+      },
+      "auth": {
+        "user": "user",
+        "pass": "pass"
+      }
+    },
+    "mailReceiver": "AppliTutoBox <applituto@dev.hornet>",
+    "mailSender": "contact.applituto@diplomatie.gouv.fr"
   }
 ```

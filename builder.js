@@ -4,6 +4,6 @@ module.exports = {
     },
 
     conf: {
-        type: 'custom'
+        type: "custom"
     }
 };

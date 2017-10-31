@@ -1,105 +1,103 @@
-"use strict";
+import { Utils } from "hornet-js-utils";
+import { Logger } from "hornet-js-utils/src/logger";
+import { HornetPage } from "hornet-js-react-components/src/widget/component/hornet-page";
+import { HornetComponentProps } from "hornet-js-components/src/component/ihornet-component";
+import { Form } from "hornet-js-react-components/src/widget/form/form";
+import { Row } from "hornet-js-react-components/src/widget/form/row";
+import { InputField } from "hornet-js-react-components/src/widget/form/input-field";
+import { TextAreaField } from "hornet-js-react-components/src/widget/form/textarea-field";
+import { Notification } from "hornet-js-react-components/src/widget/notification/notification";
+import {
+    NotificationManager,
+    Notifications,
+    NotificationType
+} from "hornet-js-core/src/notification/notification-manager";
+import { Button } from "hornet-js-react-components/src/widget/button/button";
+import { ContactService } from "src/services/page/cnt/contact-service-page";
+import { ButtonsArea } from "hornet-js-react-components/src/widget/form/buttons-area";
 
-import React = require("react");
-import utils = require("hornet-js-utils");
-var GridForm = require("hornet-js-components/src/form/grid-form");
-var Form = require("hornet-js-components/src/form/form");
-import ContactForm = require("src/views/cnt/gen-cnt-form");
-import ContactStore = require("src/stores/cnt/gen-cnt-store");
-import ActionsContact = require("src/actions/cnt/gen-cnt-actions");
-var Notification = require("hornet-js-components/src/notification/notification");
-import HornetComponent = require("hornet-js-components/src/hornet-component");
+import * as schema from "src/views/cnt/gen-cnt-page-validation.json";
 
-var Row = GridForm.Row;
-var Field = GridForm.Field;
-var logger = utils.getLogger("<%= _.slugify(appname) %>.views.cnt.gen-cnt-page");
+const logger: Logger = Utils.getLogger("<%= slugify(appname) %>.views.cnt.gen-cnt-page");
 
-@HornetComponent.ApplyMixins()
-class ContactPage extends HornetComponent<any,any> {
+export class ContactPage extends HornetPage<ContactService, HornetComponentProps, any> {
 
-    static displayName:string = "ContactPage";
+    private formI18n = this.i18n("contactPage.form");
 
-    static storeListeners = [ContactStore];
-
-    constructor(props?:any, context?:any) {
+    constructor(props?: HornetComponentProps, context?: any) {
         super(props, context);
-
-        var formData = this.getStore(ContactStore).getFormData();
-        var formConf = {
-            onChange: this.forceUpdate.bind(this),
-            autoId: "{name}",
-            data: formData || null,
-            controlled: true,
-            validation: "manual"
-        };
-        var intlMess = this.i18n("contactPage");
-        var formClass = ContactForm(intlMess.form);
-        this.state = {
-            i18n: intlMess,
-            data: formData,
-            form: new formClass(formConf)
-        };
     }
 
-    @HornetComponent.AutoBind
-    onChange() {
-        var formData = this.getStore(ContactStore).getFormData();
-        if (formData != this.state.form.data) {
-            this.state.form.setData(formData || {}, {validate: false});
-        }
-    }
-
-    getDefaultButtons() {
-        return [{
-            "type": "submit",
-            "id": "envoi",
-            "name": "action:envoi",
-            "value": "Valider",
-            "className": "hornet-button",
-            "label": this.i18n("form.valid"),
-            "title": this.state.i18n.form.validTitle
-        }];
+    /**
+     * @override
+     */
+    prepareClient(): void {
 
     }
 
-    @HornetComponent.AutoBind
-    onSubmit() {
-        logger.debug("onSubmit click");
-        var form = this.state.form;
-        if (form.validate()) {
-            this.executeAction(new ActionsContact.Send().action(), form.data);
-        }
+    /**
+     * Déclenche le submit du formulaire de contact
+     * @param data
+     */
+    onSubmit(data: any) {
+        this.getService().envoyer(data).then((result) => {
+            if (!result.errors) {
+                NotificationManager.notify(null, null, Notifications.makeSingleNotification("", this.i18n("info.message.IN-GE-CNT-01")));
+            } else {
+                let errors: Notifications = new Notifications();
+                let notif = new NotificationType();
+                notif.id = result.errors.reportId;
+                notif.text = result.errors.message;
+                errors.addNotification(notif);
+                NotificationManager.notify(null, errors, null);
+            }
+        });
     }
 
-    render() {
-        logger.info("VIEW ContactPage render");
-        logger.debug("render, form data = ", this.state.form.data);
+    /**
+     * @inheritDoc
+     */
+    render(): JSX.Element {
         return (
             <div>
-                <h2>{this.state.i18n.title}</h2>
-                <Notification />
+                <h2>{this.i18n("contactPage.title")}</h2>
+                <Notification id="notif"/>
                 <Form
-                    form={this.state.form}
-                    buttons={this.getDefaultButtons()}
+                    schema={schema}
+                    formMessages={this.formI18n}
                     onSubmit={this.onSubmit}
                 >
 
-                    <Row>
-                        <Field name="nom" labelClass={"pure-u-1-3"}/>
+                    <Row className="row">
+                        <InputField name="nom"
+                                    label={this.formI18n.fields.nom.label}
+                                    required={true}/>
                     </Row>
                     <Row>
-                        <Field name="prenom" labelClass={"pure-u-1-3"}/>
+                        <InputField name="prenom"
+                                    label={this.formI18n.fields.prenom.label}
+                                    required={true}/>
                     </Row>
                     <Row>
-                        <Field name="mail" labelClass={"pure-u-1-3"}/>
+                        <InputField name="mail"
+                                    label={this.formI18n.fields.mail.label}
+                                    required={true}/>
                     </Row>
                     <Row>
-                        <Field name="message" labelClass={"pure-u-1-3"}/>
+                        <TextAreaField name="message"
+                                       label={this.formI18n.fields.message.label}
+                                       required={true}
+                                       cols={60}
+                                       rows={6}
+                        />
                     </Row>
+                    <ButtonsArea>
+                        <Button type="submit" id="envoi" name="action:envoi"
+                                value="Valider" className="hornet-button" label={this.i18n("form.valid")}
+                                title={this.i18n("contactPage.form.validTitle")}/>
+                    </ButtonsArea>
                 </Form>
             </div>
         );
     }
 }
-
-export = ContactPage;
