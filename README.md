@@ -58,7 +58,7 @@ Le générateur demande plusieurs informations nécessaires à l'initialisation 
 * `Version de votre projet:` `(1.0.0)` : version du projet (`1.0.0` par défaut). **Ajouter -rc.X  ou X numéro de la version  d'hornetJS. [Ex: 1.0.0-rc.2]**
 * `Description de votre projet ` : un texte court présentant succintement le projet.
 * `Version du framework (hornet-js):` `(5.x.x)` : version du framework hornet-js.
-* `Thème de l'application` : hornet-themes-intranet par défaut 
+* `Thème de l'application` : hornet-themes par défaut 
 * `Version du thème de l'application` `(5.x.x)`: par défaut la version de la dernière release
 * `Host de la partie service` : URL où sont accessibles les services (partie Java Tomcat) de votre application ( par défaut : localhost:8080)
 * `ContextPath de la partie service` : nom de l'application fournissant les services (partie Java Tomcat) de votre application.
