@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Utils } from "hornet-js-utils";
 import { Logger } from "hornet-js-utils/src/logger";
 import { HornetPage } from "hornet-js-react-components/src/widget/component/hornet-page";
@@ -19,8 +20,8 @@ export class NotFoundPage extends HornetPage<any, HornetComponentProps, any> {
      * @inheritDoc
      */
     render(): JSX.Element {
-        logger.info("VIEW NotFoundPage render");
-        var error = Utils.getCls("hornet.currentError");
+        logger.trace("VIEW NotFoundPage render");
+        let error = Utils.getCls("hornet.currentError");
         let messIntl = this.i18n("nfePage");
         let title = messIntl.title ;
         let link = messIntl.backToHome ;

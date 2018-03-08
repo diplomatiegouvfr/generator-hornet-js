@@ -27,7 +27,7 @@ export class AuthenticationMiddleware extends AbstractHornetMiddleware {
         passport.use(new Strategy(
             function (_api) {
                 return function (username, password, done) {
-                    AuthenticationMiddleware.logger.info("Tentative d'authentification de l'utilisateur ", username);
+                    AuthenticationMiddleware.logger.trace("Tentative d'authentification de l'utilisateur ", username);
 
                     let encodedPassword = sha1(password);
                     _api.auth({
@@ -78,7 +78,7 @@ export class AuthenticationMiddleware extends AbstractHornetMiddleware {
         app.post(loginUrl,
             passport.authenticate("local", {failureRedirect: Utils.buildContextPath(loginUrl), failureFlash: true}),
             function (req: Request, res, next) {
-                AuthenticationMiddleware.logger.info("Authentification ok, redirection vers la page d'accueil");
+                AuthenticationMiddleware.logger.trace("Authentification ok, redirection vers la page d'accueil");
                 let previousUrl = req.body.previousUrl || req.getSession().getAttribute("previousUrl") || Utils.buildContextPath(welcomePageUrl);
                 res.redirect(previousUrl);
             }

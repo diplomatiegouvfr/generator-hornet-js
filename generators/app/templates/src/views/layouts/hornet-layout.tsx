@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Utils } from "hornet-js-utils";
 import { Logger } from "hornet-js-utils/src/logger";
 import { HornetPage } from "hornet-js-react-components/src/widget/component/hornet-page";
@@ -41,7 +42,11 @@ export class HornetLayout extends HornetPage<any, HornetLayoutProps, any> {
         super(props, context);
 
         const currentUrl = Utils.getCls("hornet.routePath");
-        this.state.applicationTitle = this.i18n(NavigationUtils.retrievePageTextKey(NavigationUtils.getConfigMenu(), currentUrl));
+        this.state = {
+            ...this.state,
+            applicationTitle: this.i18n(NavigationUtils.retrievePageTextKey(NavigationUtils.getConfigMenu(), currentUrl))
+        };
+
     }
 
     prepareClient() {
@@ -55,7 +60,7 @@ export class HornetLayout extends HornetPage<any, HornetLayoutProps, any> {
      * @inheritDoc
      */
     render(): JSX.Element {
-        logger.info("VIEW HornetLayout render");
+        logger.trace("VIEW HornetLayout render");
         let loaderStyle: React.CSSProperties = {
             "width": "100%",
             "position": "absolute",
@@ -81,14 +86,21 @@ export class HornetLayout extends HornetPage<any, HornetLayoutProps, any> {
         try {
 
             let compatible = "<!--[if IE]> <meta http-equiv=\"X-UA-Compatible\" content=\"edge\" /> <![endif]-->";
+            let configMock = Utils.config.get("mock");
 
+            if (!configMock || !configMock.enable) {
+                configMock = Utils.config.getOrDefault("mock", {
+                    enabled: false, sevicePage: {enabled: false},
+                    seviceData: {enabled: false}
+                })
+            }
             return (
                 <html dir="ltr" lang={Utils.getCls("hornet.internationalization").lang}>
                 <head>
                     <meta name="viewport"
                           content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
                     <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8"/>
-                    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+                    <meta httpEquiv="X-UA-Compatible" content="IE=edge"/>
                     <link rel="icon" type="image/png" href={this.genUrlStatic(this.state.appLogo)}/>
                     <title>{this.state.applicationTitle}</title>
                     <link rel="stylesheet" type="text/css" href={HornetLayout.genUrlTheme(this.state.fwkTheme)}/>
@@ -106,7 +118,13 @@ export class HornetLayout extends HornetPage<any, HornetLayoutProps, any> {
                 }
                 <div id="app" dangerouslySetInnerHTML={{__html: this.state.content}}/>
                 <script dangerouslySetInnerHTML={{__html: (this.state.state || "").toString()}}/>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `window.Config["mock"] = ` + JSON.stringify(configMock) + `; window.Config["env"] = "` + process.env.NODE_ENV + `"`
+                    }}
+                />
                 {process.env.NODE_ENV !== "production" ? this.renderScriptVendor() : null}
+
                 {this.renderScript()}
                 </body>
                 </html>
@@ -138,7 +156,7 @@ export class HornetLayout extends HornetPage<any, HornetLayoutProps, any> {
             if (fs.existsSync(dllDirectory)) {
 
                 let listFiles = fs.readdirSync(dllDirectory);
-                listFiles.forEach((file, idx) => {
+                listFiles.reverse().forEach((file, idx) => {
                     if (path.extname(file) == ".js" && path.basename(file).match(/^dll_/)) {
                         dlls.push(<script
                             src={this.genUrlStatic(path.join(this.state.appStaticDll, path.basename(file)))}

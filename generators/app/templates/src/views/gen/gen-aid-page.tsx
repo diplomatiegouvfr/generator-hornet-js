@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Utils } from "hornet-js-utils";
 import { Logger } from "hornet-js-utils/src/logger";
 import { HornetPage } from "hornet-js-react-components/src/widget/component/hornet-page";
@@ -15,7 +16,7 @@ export class AidePage extends HornetPage<any,HornetComponentProps,any> {
      * @inheritDoc
      */
     render(): JSX.Element {
-        logger.info("VIEW AidePage render");
+        logger.trace("VIEW AidePage render");
         return (
             <div>
                 <h2>Aide</h2>

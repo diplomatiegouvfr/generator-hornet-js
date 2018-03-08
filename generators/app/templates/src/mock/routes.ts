@@ -5,7 +5,7 @@ import { Logger } from "hornet-js-utils/src/logger";
  * Liste des utilisateurs en mode bouchon
  * @type {any[]}
  */
-var users = [
+let users = [
     {
         "name": "test",
         "roles": [{"id": 2, "name": "<%= slugify(appname) %>_USER"}]
@@ -15,9 +15,10 @@ var users = [
         "roles": [{"id": 1, "name": "<%= slugify(appname) %>_ADMIN"}, {"id": 2, "name": "<%= slugify(appname) %>_USER"}]
     }
 ];
+
 function findByUsername(username) {
-    for (var i = 0, len = users.length; i < len; i++) {
-        var user = users[i];
+    for (let i = 0, len = users.length; i < len; i++) {
+        let user = users[i];
         if (user.name === username) {
             return user;
         }
@@ -25,7 +26,7 @@ function findByUsername(username) {
     return null;
 }
 
-class BouchonRoutes {
+export class BouchonRoutes {
 
     static build(router) {
         //DEFINR LES ROUTES A BOUCHONNER
@@ -55,4 +56,3 @@ class BouchonRoutes {
 
     }
 }
-export = BouchonRoutes;

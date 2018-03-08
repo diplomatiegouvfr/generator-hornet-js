@@ -14,11 +14,18 @@ import {
     UnmanagedViewErrorMiddleware
 } from "hornet-js-react-components/src/middleware/component-middleware";
 import * as HornetMiddlewares from "hornet-js-core/src/middleware/middlewares";
-import { AuthenticationAPIMiddleware } from "src/middleware/authentication-api";
 
 import { HornetMiddlewareList } from "hornet-js-core/src/middleware/middlewares";
 
 import * as Menu from "src/resources/navigation.json";
+import "src/injector-context";
+
+async function initContext() {
+    await import("src/injector-context");
+    return await import("src/middleware/authentication-api");
+}
+
+let AuthenticationAPIMiddleware;
 
 const logger: Logger = Utils.getLogger("<%= slugify(appname) %>.server");
 
@@ -68,7 +75,12 @@ export class Server {
     }
 
     static startApplication() {
-        let server = new HornetServer.Server(Server.configure(), Server.middleware());
-        server.start();
+        initContext().then(
+            (AuthenticationAPI) => {
+                AuthenticationAPIMiddleware = AuthenticationAPI.AuthenticationAPIMiddleware;
+                let server = new HornetServer.Server(Server.configure(), Server.middleware());
+                server.start();
+            }
+        );
     }
 }

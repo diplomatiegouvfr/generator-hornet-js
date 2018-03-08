@@ -10,7 +10,7 @@ import { ReactClientInitializer } from "hornet-js-react-components/src/react/rea
     const logger: Logger = Utils.getLogger("<%= slugify(appname) %>.client");
 
     function routeLoader(name: string, callback: any) {
-        logger.info("routeLoaderClient(" + name + ")");
+        logger.trace("routeLoaderClient(" + name + ")");
         // WEBPACK_AUTO_GENERATE_CLIENT_ROUTE_LOADING
 
         return null;
@@ -34,9 +34,7 @@ import { ReactClientInitializer } from "hornet-js-react-components/src/react/rea
                 }
             },
             onbeforeunload:function() {
-                console.log(Utils.getCls("hornet.navigateData"));
-                // window.HornetCLS["hornet.navigateData"] = Utils.getCls("hornet.navigateData");
-                // Utils.setCls("hornet.navigateData", Utils.getCls("hornet.navigateData"));
+                logger.trace(Utils.getCls("hornet.navigateData"));
                 if(Utils.getCls("hornet.navigateData") && !_.isUndefined(Utils.getCls("hornet.navigateData"))) {
                     window.localStorage.setItem("hornet.navigateData", JSON.stringify(Utils.getCls("hornet.navigateData")));
                 }

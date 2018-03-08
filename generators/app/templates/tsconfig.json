@@ -18,7 +18,7 @@
   },
   "include": [
     "./**/*.ts*",
-    "definition-ts/**/*.d.ts"
+    "./definition-ts/**/*.d.ts"
   ],
   "exclude": [
     "istanbul",

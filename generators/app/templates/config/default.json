@@ -17,11 +17,16 @@
     "uploadAntivirus": false,
     "sessionTimeout": 1800000,
     "stackTraceLimit": 100,
-    "bodyParserLimit": "50mb"
+    "bodyParserLimit": "50mb",
+    "rethrow": false,
+    "notifications": {
+      "sessionTimeoutDelay": 30000,
+      "notifSessionTimeoutRepeat": 5000
+    }
     /*
     "https": {
-      "cert": "c:/home/workspace/Hornet.js/5.1.0/<%= slugify(appname) %>/config/cert/cert.pem",
-      "key": "c:/home/workspace/Hornet.js/5.1.0/<%= slugify(appname) %>/config/cert/key.pem",
+      "cert": "c:/home/workspace/Hornet.js/5.X.X/<%= slugify(appname) %>/config/cert/cert.pem",
+      "key": "c:/home/workspace/Hornet.js/5.X.X/<%= slugify(appname) %>/config/cert/key.pem",
       "passphrase": "password"
     }
     //ex : openssl req -x509 -sha256 -newkey rsa:2048 -keyout key.pem -out cert.pem -days XXX
@@ -55,7 +60,9 @@
   */
   "cookie": {
     "httpOnly": true,
-    "secure": true
+    "secure": true,
+    "defaultDuration": 3600
+    // in second
   },
   "themeName": "<%= slugify(theme) %>",
   "antivirus" : {
@@ -66,7 +73,7 @@
   "security": {
     "enabled": true,
     "hpp": true,
-    "ienoopen": true,
+    "ieNoOpen": true,
     "noSniff": true,
     "csp": {
       "enabled": true,
@@ -128,8 +135,8 @@
   "logClient": {
     "remote": false,
     "level": "TRACE",
-    "appenders": [
-      {
+    "appenders": {
+      "BrowserConsole": {
         "type": "BrowserConsole",
         //        "layout": {
         //          "type": "pattern",
@@ -139,7 +146,7 @@
           "type": "THIN"
         }
       },
-      {
+      "Ajax": {
         "type": "Ajax",
         "layout": {
           "type": "BASIC"
@@ -148,7 +155,7 @@
         "timeout": 3000,
         "url": "/log"
       }
-    ]
+    }
   },
   "defaultServices": {
     "host": "<%= hostservice %>",
@@ -170,7 +177,13 @@
     }
   },
   "mock": {
-    "enabled": false
+    "enabled": false,
+    "servicePage": {
+      "enabled": false
+    },
+    "serviceData": {
+      "enabled": false
+    }
   },
   "fullSpa": {
     "enabled": <%= fullspa %>,
@@ -182,8 +195,16 @@
     "loginUrl": "/login",
     "logoutUrl": "/logout"
   },
-  "cache": {
-    "enabled": true,
-    "timetolive": 60
+  "request": {
+    "cache": {
+      "client": {
+        "enabled": false,
+        "timetolive": 60
+      },
+      "server": {
+        "enabled": false,
+        "timetolive": 120
+      }
+    }
   }
 }

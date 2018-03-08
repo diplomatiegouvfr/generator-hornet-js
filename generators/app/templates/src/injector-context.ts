@@ -2,15 +2,23 @@ import { Utils } from "hornet-js-utils";
 
 import { AuthService } from "src/services/data/auth/auth-service";
 import { AuthServiceImpl } from "src/services/data/auth/auth-service-data-impl";
-import { AuthServiceMockImpl } from "src/mock/services/data/auth/auth-service-impl-mock";
 
 import { Injector } from "hornet-js-core/src/inject/injector";
 import { Scope } from "hornet-js-core/src/inject/injectable";
 
-if (Utils.config.getOrDefault("mock.enabled", false)) {
-    Injector.register(AuthService, AuthServiceMockImpl, Scope.SINGLETON);
+if (Utils.config.getOrDefault("mock.enabled", false) && Utils.config.getOrDefault("mock.serviceData.enabled", false)) {
+    Promise.all([
+        import("src/mock/services/data/auth/auth-service-data-mock-impl")
+    ]).then(([AuthServiceDataMockImpl]) => {
+        Injector.register(AuthService, AuthServiceDataMockImpl.AuthServiceDataMockImpl, Scope.SINGLETON);
+    });
+
 } else {
-    Injector.register(AuthService, AuthServiceImpl, Scope.SINGLETON);
+    Promise.all([
+        import("src/services/data/auth/auth-service-data-impl"),
+    ]).then(([AuthServiceImpl]) => {
+        Injector.register(AuthService, AuthServiceImpl.AuthServiceImpl, Scope.SINGLETON);
+    });
 }
 
 

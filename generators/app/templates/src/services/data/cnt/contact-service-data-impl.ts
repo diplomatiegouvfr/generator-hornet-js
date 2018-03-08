@@ -21,7 +21,7 @@ export class ContactServiceDataImpl extends ServiceRequest implements ContactSer
      * @param {object} data message à envoyer
      */
     envoyer(data:any) : Promise<any> {
-        logger.info("SERVICES - send : ", data);
+        logger.trace("SERVICES - send : ", data);
 
         let valuesToWriteIntoMessage = {
             name: data.nom,

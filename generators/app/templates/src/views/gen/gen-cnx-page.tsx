@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Utils } from "hornet-js-utils";
 import { Logger } from "hornet-js-utils/src/logger";
 import { HornetComponentProps } from "hornet-js-components/src/component/ihornet-component";
@@ -15,7 +16,11 @@ export interface ConnexionPageProps extends HornetComponentProps {
 /**
  * Ecran de connexion
  */
-export class ConnexionPage extends HornetComponent<ConnexionPageProps,any> {
+export class ConnexionPage extends HornetComponent<ConnexionPageProps, any> {
+
+    constructor(props) {
+        super(props);
+    }
 
     componentDidMount() {
         document.getElementById("username").focus();
@@ -25,7 +30,7 @@ export class ConnexionPage extends HornetComponent<ConnexionPageProps,any> {
      * @inheritDoc
      */
     render(): JSX.Element {
-        logger.info("VIEW ConnexionPage render");
+        logger.trace("VIEW ConnexionPage render");
 
         let fwkTheme: string = process.env.NODE_ENV === "production" ? "/css/theme-min.css" : "/css/theme.css";
 
@@ -36,7 +41,7 @@ export class ConnexionPage extends HornetComponent<ConnexionPageProps,any> {
                 <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8"/>
                 <link rel="icon" type="image/png" href={this.genUrlStatic("/img/logoHornet.png")}/>
                 <link rel="stylesheet" type="text/css" href={ConnexionPage.genUrlTheme(fwkTheme)}/>
-                <link rel='stylesheet' type='text/css' href={this.genUrlStatic("/css/auth.css")}/>
+                <link rel="stylesheet" type="text/css" href={this.genUrlStatic("/css/auth.css")}/>
             </head>
             <body id="auth">
             <div id="site">
@@ -47,23 +52,29 @@ export class ConnexionPage extends HornetComponent<ConnexionPageProps,any> {
                             <h2>Entrez votre identifiant et votre mot de passe.</h2>
 
                             {this._renderErrorDiv()}
-
+                            <div className="cnx-info">
+                                <p> Se connecter en tant que : </p>
+                                <p> Administrateur : admin / admin</p>
+                                <p> Utilisateur : user / user </p>
+                            </div>
                             <div className="row">
                                 <label htmlFor="username"><span className="accesskey">I</span>dentifiant :</label>
-                                <input  autoFocus type="text"  accessKey="i" tabIndex={1} className="required"
-                                       ref="username" name="username" id="username" />
+                                <input autoFocus type="text" accessKey="i" tabIndex={1} className="required"
+                                       ref="username" name="username" id="username"/>
                             </div>
                             <div className="row">
                                 <label htmlFor="password"><span className="accesskey">M</span>ot de passe :</label>
-                                <input type="password"  accessKey="m" tabIndex={2}
-                                       className="required" ref="password" name="password" id="password" />
+                                <input type="password" accessKey="m" tabIndex={2}
+                                       className="required" ref="password" name="password" id="password"/>
                             </div>
                             <input type="hidden" name="previousUrl" value={this.state.previousUrl}/>
 
                             <div className="row btn-row">
                                 <button type="submit" tabIndex={4} accessKey="l" name="submit"
-                                       className="btn-submit"> SE CONNECTER </button>
+                                        className="btn-submit"> SE CONNECTER
+                                </button>
                             </div>
+
                         </div>
                     </form>
 

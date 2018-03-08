@@ -1,74 +1,81 @@
-<%= appname %> <%= appversion %>
+#<%= appname %> <%= appversion %>
 ===============
 
 
-# Prérequis
+## Prérequis
 
-* NodeJS 6.9
+* NodeJS 8.X
 * hornet-js-builder installé en global:
 
-
-    $ npm install -g hornet-js-builder
+```shell
+npm install -g hornet-js-builder
+```
 
 * checkout du projet `<%= slugify(appname) %>`
 
-# Initialisation
+## Initialisation
 
 Se positionner dans le répertoire du projet `<%= slugify(appname) %>` et lancer la commande:
 
-    $ hb install
+```shell
+hb install
+```
 
-# Démarrage de l'application en mode développement
+## Démarrage de l'application en mode développement #
 
-## Commande par défaut
+### Commande par défaut
 
 la commande à exécuter en mode développement est la suivante:
 
-    $ hb w
+```shell
+hb w
+```
 
 Elle permet de lancer l'application en mode `watcher` afin que les modifications soient prises en compte (ce qui
 entrainera un redémarrage du serveur node dans le cas d'une détection de modification).
 
-## Options
+### Options
 
 Il est également possible d'ajouter à cette commande l'option:
 
-    $ hb w -i
+```shell
+hb w -i
+```
 
 Cette commande indique au builder de ne pas transpiler les fichiers typescript en javascript.
 Elle est à utiliser dans le cas où l'IDE a été configuré de telle sorte que la transpilation ts->js
 se fasse via ce dernier.
 
 
-# Vérification
+## Vérification
 
 Vous pouvez accéder à l'application depuis l'url [http://localhost:8888/<%= slugify(appname) %>/](http://localhost:8888/<%= slugify(appname) %>)
 
-# Fichier de configuration de l'application : default.json
+## Fichier de configuration de l'application : default.json
 
 L'ensemble de la configuration applicative du serveur NodeJS se situe dans le fichier default.json contenu dans les sources de l'application.
 
 Ce fichier ne doit pas être modifié, excepté pour le log console. Les modifications sont à apporter dans les fichiers d'infrastructure.
 
-## Partie applicative
+### Configuration applicative
 
 | Paramètre | Description | Valeur |
 |-----------|-------------|--------|
 |contextPath| Contexte de l'application déployée|Par défaut vide|
 |welcomePage|Page de démarrage de l'application|Passé en paramètre du ServerConfiguration|
-|themeUrl|Url du thème CSS|[Protocol]://[host]:[port]/hornet/themeName|
+|themeName|nom de la dépendance de theme pour la copie dans les static||
 
-```javascript
+```json
 {
   "contextPath": "<%= slugify(appname) %>",
   "welcomePage": "/accueil",
-  ...<
+  ...
 }
 
 ```
 
 
-## Partie serveur
+### Configuration serveur
 
 | Paramètre | Description | Valeur |
 |-----------|-------------|--------|
@@ -80,7 +87,7 @@ Ce fichier ne doit pas être modifié, excepté pour le log console. Les modific
 |uploadFileSize|Taille maximale d'upload de fichier|1000000|
 |sessionTimeout|Timeout des sessions utilisateur|1800000|
 
-```javascript
+```json
   "server": {
     "route": "js1",
     "port": 8888,
@@ -92,7 +99,7 @@ Ce fichier ne doit pas être modifié, excepté pour le log console. Les modific
   }
 ```
 
-## Partie Cookie
+### Configuration Cookie
 
 Cette partie contient l'ensemble du paramétrage spécifique aux exécutions réalisées coté serveur, ainsi que ses spécificités de démarrage.
 
@@ -104,7 +111,7 @@ Cette partie contient l'ensemble du paramétrage spécifique aux exécutions ré
 |secure|Sécurisation du cookie|true|
 |alwaysSetCookie|Ajout du cookie dans le Header|false|
 
-```javascript
+```json
   "cookie": {
     //"domain": null,
     //"path": null,
@@ -115,7 +122,7 @@ Cette partie contient l'ensemble du paramétrage spécifique aux exécutions ré
 ```
 
 
-## Configuration de la sécurité
+### Configuration de la sécurité
 
 Ce bloc contient l'ensemble des paramètres destinés à la configuration de helmet.
 
@@ -150,7 +157,7 @@ Ce bloc contient l'ensemble des paramètres destinés à la configuration de hel
 |csr.>maxTokensPerSession|Nombre de tokens par session|10|
 
 
-```javascript
+```json
 "security": {
     "enabled": true,
     "hpp": true,
@@ -161,7 +168,8 @@ Ce bloc contient l'ensemble des paramètres destinés à la configuration de hel
       "defaultSrc": [
         "'self'",
         "'unsafe-inline'",
-        "'unsafe-eval'"
+        "'unsafe-eval'",
+        "[Protocol]://[host]:[port]"
       ],
       "scriptSrc": [
         "'self'",
@@ -218,16 +226,16 @@ Ce bloc contient l'ensemble des paramètres destinés à la configuration de hel
   }
 ```
 
-## Configuration des logs serveur
+### Configuration des logs serveurs
 
 Niveau de log :
 
 | Paramètre | Description | Valeur |
 |-----------|-------------|--------|
-|level.[all]|Niveau de log pour toute l'application|INFO|
-|level.monappli.view|Niveau de log spécifique pour une partie de l'application |optionnel|
+|level.[all]|niveau de log pour toute l'application|INFO|
+|level.monappli.view|niveau de log spécifique pour une partie de l'application |optionnel|
 
-```javascript
+```json
  "log": {
     "levels": {
       "[all]": "DEBUG",
@@ -241,7 +249,7 @@ Déclaration des appenders :
 | Paramètre | Description | Valeur |
 |-----------|-------------|--------|
 |type|Type d'appender|*file* pour un fichier simple<br/>*dateFile* pour un fichier contenant la date<br/>*console* ...|
-|filename| Chemin absolu ou relatif au lancement du fichier de log | /var/log/nodejs/<%= slugify(appname) %>/<%= slugify(appname) %>-1.log|
+|filename| Chemin absolu ou relatif au lancement du fichier de log | |
 |pattern| Présent pour les types *dateFile* <br />Permet de donner un pattern de date qui sera ajouté au nom du fichier.|-yyyy-MM-dd|
 |layout.type| Type d'affichage des messages|pattern|
 |layout.pattern| Schéma d'affichage des messages |"%[%d{ISO8601}|%x{tid}|%x{user}|%p|%c|%x{fn}|%m%]"|
@@ -249,7 +257,7 @@ Déclaration des appenders :
 
 Ex: type console
 
-```javascript
+```json
 "appenders": [
 	{
 	    "type": "console",
@@ -263,7 +271,7 @@ Ex: type console
 
 ex : type fichier
 
-```javascript
+```json
 "appenders": [
 	{
 	    "type": "dateFile",
@@ -276,21 +284,21 @@ ex : type fichier
 ]
 ```
 
-## Configuration des logs client
+### Configuration des logs client
 
 | Paramètre | Description | Valeur |
 |-----------|-------------|--------|
-|remote|Activation des remotes log|false|
-|level|Niveau de log|INFO|
+|remote|Activatino des remotes log|false|
+|level|niveau de log|INFO|
 
-```javascript
+```json
   "logClient": {
     "remote": false,
     "level": "TRACE",
     ...
 ```
 
-## Déclaration des appenders
+### Déclaration des appenders
 
 Type BrowserConsole :
 
@@ -301,13 +309,14 @@ Type BrowserConsole :
 |layout.type| Type d'affichage des messages|THIN/BASIC/pattern/...|
 |layout.pattern| Schéma d'affichage des messages |"%p|%c|%m%"|
 
-```javascript
-"appenders": [
-{
-	"type": "BrowserConsole",
-	"layout": {
-	  "type": "THIN"
-	}
+```json
+"appenders": {
+    "BrowserConsole" : {
+        "type": "BrowserConsole",
+        "layout": {
+          "type": "THIN"
+        }
+    }
 }
 ```
 
@@ -322,21 +331,21 @@ Type Ajax :
 |timeout|Timeout d'envoie des messages|3000|
 |url|URL d'envoi des logs|/logs|
 
-```javascript
-"appenders": [
-	{
-	    "type": "Ajax",
-	    "layout": {
-	      "type": "BASIC"
-	    },
-	    "threshold": 100,
-	    "timeout": 3000,
-	    "url": "/log"
-	}
-]
+```json
+"appenders": {
+    "Ajax": {
+        "type": "Ajax",
+        "layout": {
+          "type": "BASIC"
+        },
+        "threshold": 100,
+        "timeout": 3000,
+        "url": "/log"
+    }
+}
 ```
 
-## Configuration des services
+### Configuration des services
 
 
 | Paramètre | Description | Valeur |
@@ -352,7 +361,7 @@ Type Ajax :
   }
 ```
 
-## Mode mock
+### Mode mock
 
 | Paramètre | Description | Valeur |
 |-----------|-------------|--------|
@@ -360,7 +369,7 @@ Type Ajax :
 |host|Hôte local du mock|localhost|
 |routes|Chemin vers le fichier de routes mocké sans le /src |/mock/routes|
 
-```javascript
+```json
   "mock": {
     "enabled": true,
     "host": "127.0.0.1", //default localhost
@@ -368,7 +377,7 @@ Type Ajax :
   }
 ```
 
-## Mode fullSPA
+### Mode fullSPA
 
 NOTE : Le mode fullSPA n'est pas encore complètement supporté par hornet, la configuration est présente à titre d'information
 
@@ -378,7 +387,7 @@ NOTE : Le mode fullSPA n'est pas encore complètement supporté par hornet, la c
 |host|Host du mode fullSPA|""|
 |name|Nom du service pour le mode fullSPA|/services|
 
-```javascript
+```json
 "fullSpa": {
     "enabled": false,
     "host": "",
@@ -386,33 +395,22 @@ NOTE : Le mode fullSPA n'est pas encore complètement supporté par hornet, la c
   }
 ```
 
-## Configuration de l'authentification
+__NOTE__ : non opérationnel
 
-Note : Il ne s'agit pas d'une configuration à proprement parler de Hornet mais uniquement viable dans l'application <%= appname %>
-
-| Paramètre | Description | Valeur |
-|-----------|-------------|--------|
-|loginUrl|Url de connexion à l'application|/login|
-|logoutUrl|Url de déconnexion de l'application|/logout|
-
-```javascript
-  "authentication": {
-    "loginUrl": "/login",
-    "logoutUrl": "/logout"
-  }
-```
-
-## Configuration du Cache
+### Configuration de Request
+#### Configuration du Cache
 
 | Paramètre | Description | Valeur |
 |-----------|-------------|--------|
 |enabled|Activation du cache sur les requêtes de services|true|
 |timetolive|Durée de rétention du cache|60|
 
-```javascript
-"cache": {
-    "enabled": true,
-    "timetolive": 60
+```json
+"request": {
+    "cache": {
+        "enabled": true,
+        "timetolive": 60
+      }
   }
 ```
 
@@ -437,8 +435,6 @@ Note : Il ne s'agit pas d'une configuration à proprement parler de Hornet mais 
         "user": "user",
         "pass": "pass"
       }
-    },
-    "mailReceiver": "AppliTutoBox <applituto@dev.hornet>",
-    "mailSender": "contact.applituto@diplomatie.gouv.fr"
+    }
   }
 ```

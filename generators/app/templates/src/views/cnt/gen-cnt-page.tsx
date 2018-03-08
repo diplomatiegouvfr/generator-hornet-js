@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Utils } from "hornet-js-utils";
 import { Logger } from "hornet-js-utils/src/logger";
 import { HornetPage } from "hornet-js-react-components/src/widget/component/hornet-page";
@@ -42,14 +43,14 @@ export class ContactPage extends HornetPage<ContactService, HornetComponentProps
     onSubmit(data: any) {
         this.getService().envoyer(data).then((result) => {
             if (!result.errors) {
-                NotificationManager.notify(null, null, Notifications.makeSingleNotification("", this.i18n("info.message.IN-GE-CNT-01")));
+                NotificationManager.notify(null, "contactForm", null, Notifications.makeSingleNotification("", this.i18n("info.message.IN-GE-CNT-01")));
             } else {
                 let errors: Notifications = new Notifications();
                 let notif = new NotificationType();
                 notif.id = result.errors.reportId;
                 notif.text = result.errors.message;
                 errors.addNotification(notif);
-                NotificationManager.notify(null, errors, null);
+                NotificationManager.notify(null, "contactForm", errors, null);
             }
         });
     }
@@ -63,6 +64,7 @@ export class ContactPage extends HornetPage<ContactService, HornetComponentProps
                 <h2>{this.i18n("contactPage.title")}</h2>
                 <Notification id="notif"/>
                 <Form
+                    id="contactForm"
                     schema={schema}
                     formMessages={this.formI18n}
                     onSubmit={this.onSubmit}

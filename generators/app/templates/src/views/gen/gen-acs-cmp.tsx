@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Utils } from "hornet-js-utils";
 import { Logger } from "hornet-js-utils/src/logger";
 import { HornetComponentProps } from "hornet-js-components/src/component/ihornet-component";
@@ -19,18 +20,18 @@ export class AccessibleComponent extends HornetComponent<AccessibleComponentProp
      * @inheritDoc
      */
     render(): JSX.Element {
-        logger.info("VIEW AccessibleBar render");
-        var applicationTitle = this.state.applicationTitle;
-        var messIntl = this.i18n("header");
+        logger.trace("VIEW AccessibleBar render");
+        let applicationTitle = this.state.applicationTitle;
+        let messIntl = this.i18n("header");
 
-        var lienContact = (this.state.linkContactVisible) ?
+        let lienContact = (this.state.linkContactVisible) ?
             <li><a href={this.genUrl("/contact")}>{messIntl.contact}</a></li>
             : null;
-        var lienAide = (this.state.linkHelpVisible) ?
+        let lienAide = (this.state.linkHelpVisible) ?
             <li><a href={this.genUrl("/aide")}>{messIntl.help}</a></li>
             : null;
 
-        var lienFullscreen = (this.props.linkFullscreenVisible === true) ?
+        let lienFullscreen = (this.props.linkFullscreenVisible === true) ?
             <li className="fullscreen">
                 <a onClick={this.props.onClickLinkFullscreen} className="icone_action">
                     <img

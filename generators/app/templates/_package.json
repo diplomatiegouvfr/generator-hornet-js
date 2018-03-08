@@ -23,8 +23,8 @@
     "passport": "0.2.1",
     "passport-local": "1.0.0",
     "sha1": "1.1.1",
-    "jsonwebtoken": "7.3.0",
-    "chart.js": "2.6.0"
+    "chart.js": "2.6.0",
+    "jsonwebtoken": "7.3.0"
   },
   "buildDependencies": {
   },
@@ -33,7 +33,8 @@
   },
   "scripts": {
     "init-dev": "hb install",
-    "start": "node index.js"
+    "init-snapshot": "hb dependency:set-snapshot --dependencyVersionFix=hornet-js --module=hornet-js-core && hb dependency:set-snapshot --dependencyVersionFix=hornet-themes-intranet --module=hornet-themes-intranet && hb install",
+    "version": "echo $npm_package_version"
   },
   "author": "MEAE - Ministère de l'Europe et des Affaires étrangères"
 }

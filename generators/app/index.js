@@ -76,8 +76,8 @@ module.exports = Generator.extend({
             },
             type: "input",
             name: "theme",
-            message: "Theme de l'application",
-            default: "hornet-themes"
+            message: "Theme de l'application, ex : hornet-themes-intranet",
+            default: "hornet-themes-[NOM_THEME]"
         });
         prompts.push({
             when: function () {
@@ -104,7 +104,7 @@ module.exports = Generator.extend({
             type: "input",
             name: "urlservice",
             message: "ContextPath de la partie service",
-            default: this.appname + "-services"
+            default: defaultAppName + "-services"
         });
         prompts.push({
             when: function () {
@@ -182,11 +182,26 @@ module.exports = Generator.extend({
         //builder.js
         this._copy("builder.js", defaultConfig);
 
+        //hbw.sh
+        this._copy("hbw.sh", defaultConfig);
+
+        //Jenkinsfile
+        this._copy("Jenkinsfile", defaultConfig);
+
+        //trigger-rundeck.js
+        this._copy("trigger-rundeck.js", defaultConfig);
+
         //index.ts
         this._copy("index.ts");
 
         // package.json
         this._copy("_package.json", "package.json", defaultConfig);
+
+        // .gitignore
+        this._copy("gitignore", ".gitignore", defaultConfig);
+
+        // npmignore
+        this._copy("npmignore", ".npmignore", defaultConfig);
 
         // config/*
         this._writingConfig(defaultConfig);
@@ -195,6 +210,8 @@ module.exports = Generator.extend({
         // Attention, ne pas copier l"image unitairement, sinon le proccessing va la corrompre
         //this._copyDir("static/img/");
         this._writingStatic(defaultConfig);
+
+        this._writingTemplate(defaultConfig);
 
         // src
         this._writingSrc(defaultConfig);
@@ -205,6 +222,8 @@ module.exports = Generator.extend({
 
         this._copy("tsconfig.json", "tsconfig.json", defaultConfig);
 
+        this._copy("environment/**", "environment/", defaultConfig);
+
         // config/navigation.json
         this._copy("src/resources/**", "src/resources/", defaultConfig);
 
@@ -212,6 +231,9 @@ module.exports = Generator.extend({
     _writingStatic: function (defaultConfig) {
         this._copySingle("static/css/**", "static/css/");
         this._copySingle("static/img/**", "static/img/");
+    },
+    _writingTemplate: function (defaultConfig) {
+        this._copy("template/**", "template/", defaultConfig);
     },
     _writingSrc: function (defaultConfig) {
 
@@ -241,9 +263,6 @@ module.exports = Generator.extend({
         this._copy("src/client.ts", defaultConfig);
         this._copy("src/server.ts", defaultConfig);
         this._copy("src/injector-context.ts", defaultConfig);
-
-        // npmignore
-        this._copy(".npmignore");
 
         //README.md
         this._copy("README.md", defaultConfig);
@@ -304,6 +323,6 @@ module.exports = Generator.extend({
     },
 
     install: function () {
-        this.installDependencies();
+        this.installDependencies({bower: false});
     }
 });

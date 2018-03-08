@@ -152,14 +152,17 @@ ServerLogConfigurator.configure();
 
 // initialisation des infos de l'application courante
 import { AppSharedProps } from "hornet-js-utils/src/app-shared-props";
+import { Utils } from "hornet-js-utils";
 var packageJson = require("./package");
 AppSharedProps.set("appName", packageJson.name);
 AppSharedProps.set("appVersion", packageJson.version);
 AppSharedProps.set("appDescription", packageJson.description);
 AppSharedProps.set("appAuthor", packageJson.author);
-
-// Mise en place des injections de service
-import "./src/injector-context";
+AppSharedProps.set("clientSessionConfig", {
+    sessionTimeout: Utils.config.get("server.sessionTimeout"),
+    notifSessionTimeout: Utils.config.get("server.notifications.sessionTimeoutDelay"),
+    notifSessionTimeoutRepeat: Utils.config.get("server.notifications.notifSessionTimeoutRepeat")
+});
 
 // lancement de l'application
 import { Server } from "src/server";

@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Utils } from "hornet-js-utils";
 import { Logger } from "hornet-js-utils/src/logger";
 import { HornetPage } from "hornet-js-react-components/src/widget/component/hornet-page";
@@ -18,7 +19,7 @@ export class PlanAppliPage extends HornetPage<any, HornetComponentProps, any> {
      * @inheritDoc
      */
     render(): JSX.Element {
-        logger.info("VIEW PlanAppliPage render");
+        logger.trace("VIEW PlanAppliPage render");
         return (
             <div>
                 <h2>{this.i18n("navigation.plan")}</h2>

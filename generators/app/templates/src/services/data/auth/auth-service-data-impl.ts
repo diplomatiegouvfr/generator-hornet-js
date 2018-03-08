@@ -25,7 +25,7 @@ export class AuthServiceImpl extends AuthService {
      * @param {object} data
      */
     auth(data): Promise<any> {
-        logger.info("SERVICES - auth", data);
+        logger.trace("SERVICES - auth", data);
 
         let request: HornetRequest = {
             url: this.buildUrl(URL_UTILISATEURS + URL_UTILISATEURS_AUTH),
@@ -36,23 +36,4 @@ export class AuthServiceImpl extends AuthService {
         return this.fetch(request);
     }
 
-    saveToken(response: Response) {
-
-        if (response && response.get && response.get(ServiceSecure.HEADER_AUTH)
-            && response.get(ServiceSecure.HEADER_AUTH).slice(0, "Bearer ".length) == "Bearer ") {
-
-            let token: string = response.get(ServiceSecure.HEADER_AUTH).substring("Bearer ".length);
-
-            Utils.getContinuationStorage().get("hornet.request").getSession().authorizationToken = token;
-            var cert = fs.readFileSync(path.join(__dirname, "../../../../config/keys/public.pem"));  // get public key
-            jwt.verify(token, cert, {algorithms: ["HS256", "RS512"]}, function(err, decoded) {
-                logger.info("JWToken : ", decoded);
-            });
-        }
-    }
-
-
-    getToken() {
-        return null;
-    }
 }

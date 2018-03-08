@@ -1,13 +1,10 @@
 import { Utils } from "hornet-js-utils";
 import { Logger } from "hornet-js-utils/src/logger";
 import { AuthService } from "src/services/data/auth/auth-service";
-import { ServiceSecure } from "hornet-js-core/src/services/service-secure";
-import { Promise } from "hornet-js-utils/src/promise-api";
 import { Response } from "superagent";
+import { Promise } from "hornet-js-utils/src/promise-api";
 
-const jwt = require("jsonwebtoken");
-
-const logger: Logger = Utils.getLogger("mock.services.page.auth.auth-service-impl-mock");
+const logger: Logger = Utils.getLogger("<%= slugify(appname) %>.mock.services.data.auth.auth-service-data-mock-impl");
 
 /**
  * Liste des utilisateurs en mode bouchon
@@ -40,7 +37,7 @@ function findByUsername(username) {
  * @implements {AuthService}
  * @extends {ServiceApi}
  */
-export class AuthServiceMockImpl extends AuthService {
+export class AuthServiceDataMockImpl extends AuthService {
 
     /**
      * recherche de l'identité
@@ -51,4 +48,5 @@ export class AuthServiceMockImpl extends AuthService {
         let user = findByUsername(data.login);
         return Promise.resolve(user);
     }
+
 }

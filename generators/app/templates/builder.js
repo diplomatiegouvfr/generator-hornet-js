@@ -1,26 +1,35 @@
 var path = require("path");
 module.exports = {
     type: "application",
-    authorizedPrerelease: "true",
+    authorizedPrerelease: "false",
 
     gulpTasks: function (gulp, project, conf, helper) {
         //Add task if needed
-        gulp.beforeTask("compile", function () {
-            helper.info("Exemple before compile task");
+        /*gulp.beforeTask("compile", function () {
+         helper.info("Exemple before compile task");
+         });
+
+         gulp.afterTask("compile", function () {
+         helper.info("Exemple after compile task");
+         });*/
+
+        // gulp.addTaskDependency("package-zip-static", "prepare-package:spa");
+
+        conf.template.forEach((elt, idx) => {
+            if (conf.template[idx].context.forEach) {
+            conf.template[idx].context.forEach((elt, idx2) => {
+                conf.template[idx].context[idx2].messages = {
+                "applicationTitle": "<%= slugify(appname) %>"
+            };
         });
 
-        gulp.afterTask("compile", function () {
-            helper.info("Exemple after compile task");
-        });
+        } else {
+            conf.template[idx].context.messages = {
+                "applicationTitle": "<%= slugify(appname) %>"
+            };
+        }
+    });
 
-
-        // Cas PARTICULIER de l'application tuto pour pouvoir la générer en mode SPA et ISOMORPHIC sur la PIC
-        // => on force la tâche prepare-package:spa tout le temps
-        // si mode fullSpa : on redéfini les tâches 'watch' & 'watch-prod' pour y inclure la tâche "prepare-package-spa"
-        //gulp.task("watch", ["compile", "prepare-package:spa", "watch:client", "watch:lint"]);
-        //gulp.task("watch-prod", ["compile", "prepare-package:spa", "watch:client-prod", "watch:lint"]);
-        gulp.addTaskDependency("package-zip-static", "prepare-package:spa");
-        // conf.template.messages = require("applitutoriel-js-common/src/resources/messages.json")
 
     },
     externalModules: {
@@ -35,7 +44,8 @@ module.exports = {
             dirs: [
                 path.join("src","services","data"),
                 "nodemailer",
-                "src/middleware"],
+                "src/middleware",
+                "src/actions"],
             filters: [
                 path.join("src","services","data")+"/.*-data-\.*",
                 ".*/src/actions/.*",
@@ -48,14 +58,39 @@ module.exports = {
             ]
         },
         clientContext: [
-            [/moment[\/\\]locale$/, /fr|en/],
-            [/intl[\/\\]locale-data[\/\\]jsonp$/, /fr|en/],
+            [/moment[\/\\]locale$/, /fr/],
+            [/intl[\/\\]locale-data[\/\\]jsonp$/, /fr/],
             [/.appender/, /console/]
         ],
-        typescript: { //bin: "~/Dev/node-v4.5.0-linux-x64/lib/node_modules/typescript"
-        },
+        typescript: {},
+        template: [{
+            context: [{
+                error: "404",
+                suffixe: "_404",
+                message: "Oops! Nous ne trouvons pas ce que vous cherchez!"
+            }, {
+                error: "500",
+                suffixe: "_500",
+                message: "Oops! Une erreur est survenue!"
+            },
+                {
+                    error: "403",
+                    suffixe: "_403",
+                    message: "Oops! Accès interdit !"
+                }
+            ],
+            dir: "./template/error",
+            dest: "/error"
+        }, {
+            context: {
+                message: "test template"
+            }
+        }],
         dev: {
-            dllEntry: {vendor: ["ajv", "react-dom", "react", "bluebird", "moment", "intl", "moment-timezone", "lodash"]}
+            dllEntry: {
+                vendor: ["hornet-js-react-components", "hornet-js-components", "hornet-js-utils", "hornet-js-core", "hornet-js-bean"]
+            }
         }
     }
-}
+
+};

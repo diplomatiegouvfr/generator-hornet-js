@@ -1,5 +1,6 @@
 import { Utils } from "hornet-js-utils";
 import { Logger } from "hornet-js-utils/src/logger";
+import * as React from "react";
 import { Class } from "hornet-js-utils/src/typescript-utils";
 import { HornetPage, HornetPageProps } from "hornet-js-react-components/src/widget/component/hornet-page";
 import { HornetComponentProps } from "hornet-js-components/src/component/ihornet-component";
@@ -11,8 +12,12 @@ import { User } from "hornet-js-react-components/src/widget/user/user";
 import { Menu } from "hornet-js-react-components/src/widget/navigation/menu";
 import { LayoutSwitcher } from "hornet-js-react-components/src/widget/screen/layout-switcher";
 import { ChangeLanguage } from "hornet-js-react-components/src/widget/language/change-language";
-import { Position } from "hornet-js-react-components/src/widget/dropdown/dropdown";
-import { I18nServiceApi } from "hornet-js-core/src/services/i18n-service-api";
+import { Dropdown, Position } from "hornet-js-react-components/src/widget/dropdown/dropdown";
+import * as ChangeLanguageService from "hornet-js-core/src/services/default/change-language";
+import { NavigationUtils } from "hornet-js-components/src/utils/navigation-utils";
+import { NotificationSessionFooter } from "hornet-js-react-components/src/widget/notification/notification-session-footer";
+import { MenuAccessibilite } from "hornet-js-react-components/src/widget/navigation/menu-accessibilite";
+
 
 import * as _ from "lodash";
 import * as classNames from "classnames";
@@ -29,41 +34,34 @@ export interface HornetAppProps extends HornetPageProps, HornetComponentProps {
 
 export class HornetApp extends HornetPage<any, HornetAppProps, any> {
 
-    constructor(props: HornetAppProps, context?: any) {
-        super(props, context);
-
-
-        this.service = new I18nServiceApi();
-        // Exemple de consommation d'une ressource externe :q
-        // prérequis : - renseigner themeHost dans le default.json
-        //             - mettre à jour la policy des images pour autoriser le host
-        // L'exemple :
-        // this.state.logoUrl = HornetComponent.genUrlThemeExternal("/img/ic_logo_hornet_header.png");
-
-        this.state.logoUrl = this.genUrlStatic("/img/logoHornet.png");
-        this.state.headerTitleUrl = "http://intranet.diplomatie.gouv.fr/";
-        this.state.content = props.content;
-
-        this.listenUrlChangeEvent();
-    }
+    menu: Menu;
 
     static defaultProps = {
         composantPage: null,
-        workingZoneWidth: "1200px"
+        workingZoneWidth: "1200px",
+        logoUrl: Utils.buildStaticPath("/img/logoHornet.png"),
+        headerTitleUrl: "http://intranet.diplomatie.gouv.fr/"
     };
+
+    constructor(props: HornetAppProps, context?: any) {
+        super(props, context);
+        this.service = new ChangeLanguageService.ChangeLanguage();
+        this.listenUrlChangeEvent();
+    }
+
 
     componentDidMount() {
         super.componentDidMount();
         this.listenUpdatePageExpandEvent();
-        if(this.state.error && this.state.error.hasBeenReported) {
-            this.state.error = undefined;
+        if (this.state.error && this.state.error.hasBeenReported) {
+            (this.state as any).error = undefined;
         } else if (this.state.error) {
-            this.state.error.hasBeenReported = true;
+            (this.state as any).error.hasBeenReported = true;
         }
     }
 
     componentWillUpdate(nextProps, nextState) {
-        if(nextState.error && nextState.error.hasBeenReported) {
+        if (nextState.error && nextState.error.hasBeenReported) {
             nextState.error = undefined;
         }
     }
@@ -76,7 +74,7 @@ export class HornetApp extends HornetPage<any, HornetAppProps, any> {
      * @inheritDoc
      */
     render(): JSX.Element {
-        logger.info("VIEW HornetApp render");
+        logger.trace("VIEW HornetApp render");
 
         let title = _.concat(this.i18n("header").logoTitle, this.state.applicationTitle).join(" ");
 
@@ -91,14 +89,17 @@ export class HornetApp extends HornetPage<any, HornetAppProps, any> {
         let lienAide = (this.state.linkHelpVisible) ?
             <li><a title={messIntl.help + applicationTitle} href={this.genUrl("/aide")}>{messIntl.help}</a></li>
             : null;
-
-        let user = <User/>;
         let lang = <ChangeLanguage handleChangeLanguage={this.handleChangeLanguage} position={Position.BOTTOMRIGHT}/>;
+        let user = <User/>;
+        let langBanner = <ChangeLanguage id="Change-Language-banner" handleChangeLanguage={this.handleChangeLanguage}
+                                         position={Position.BOTTOMRIGHT}/>;
+        let userBanner = <User id="user-banner"/>;
 
+        // todo add to banner
         let wrappedUserLang = (
             <div className="userlang fr full-height">
-                {user}
-                {lang}
+                {userBanner}
+                {langBanner}
                 <LayoutSwitcher/>
             </div>
         );
@@ -107,6 +108,7 @@ export class HornetApp extends HornetPage<any, HornetAppProps, any> {
             <div id="site" className={classNames(classes)}>
                 <HeaderPage scrollHeight={35}>
                     <div id="header">
+                        <MenuAccessibilite/>
                         <div id="header-expanded-zone" className={"inside " + this.state.classNameExpanded}
                              style={{maxWidth: this.state.currentWorkingZoneWidth}}>
                             <div className="fl full-height">
@@ -122,11 +124,14 @@ export class HornetApp extends HornetPage<any, HornetAppProps, any> {
                         </div>
                     </div>
                     <div id="banner">
-                        <div id="banner-expanded-zone" role="banner"
+                        <div id="banner-expanded-zone"
                              className={"inside " + this.state.classNameExpanded}
                              style={{maxWidth: this.state.currentWorkingZoneWidth}}>
                             <div className="fl menu-main-conteneur ">
-                                <Menu showIconInfo={true} workingZoneWidth={this.state.currentWorkingZoneWidth}/>
+                                <Menu showIconInfo={true} workingZoneWidth={this.state.currentWorkingZoneWidth}
+                                      var={(menu: any) => {
+                                          return this.menu = menu;
+                                      }}/>
                             </div>
                             <div className="fl mls">
                                 <a className="sub-header-link"
@@ -146,7 +151,9 @@ export class HornetApp extends HornetPage<any, HornetAppProps, any> {
                         <Spinner/>
                     </div>
                 </HeaderPage>
-                <HornetContent content={this.state.content} workingZoneWidth={this.state.workingZoneWidth} error={this.state.error}/>
+                <HornetContent content={this.state.content} workingZoneWidth={this.state.workingZoneWidth}
+                               error={this.state.error}/>
+                <NotificationSessionFooter/>
                 <FooterPage workingZoneWidth={this.state.currentWorkingZoneWidth}>
                     <div className="fl mll">
                         <ul className="footer-links">
@@ -189,6 +196,19 @@ export class HornetApp extends HornetPage<any, HornetAppProps, any> {
 
         this.service.changeLanguage({"hornetI18n": i18nLocale}).then((retourApi) => {
             logger.trace("Retour API PartenaireApi.rechercher :", retourApi.body);
+            Utils.setCls("hornet.internationalization", retourApi.body);
+            window.location.reload();
+        });
+    }
+
+    /**
+     * Méthode permettant de réveiller le serveur node afin de ne pas perdre la session
+     * @param i18nLocale
+     */
+    private handleWakeUpNode(i18nLocale: string) {
+
+        this.service.changeLanguage({"hornetI18n": i18nLocale}).then((retourApi) => {
+            logger.trace("Retour service changeLanguage :", retourApi.body);
             Utils.setCls("hornet.internationalization", retourApi.body);
             window.location.reload();
         });

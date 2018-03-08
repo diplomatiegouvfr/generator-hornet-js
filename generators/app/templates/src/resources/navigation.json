@@ -46,7 +46,7 @@
       "text": "navigation.declarationconformity",
       "url": "/declarationConformite",
       "visibleDansMenu": false,
-      "visibleDansPlan": false,
+      "visibleDansPlan": true,
       "rolesAutorises": [
         "<%= slugify(appname) %>_USER",
         "<%= slugify(appname) %>_ADMIN"
