@@ -34,7 +34,15 @@
   "scripts": {
     "init-dev": "hb install",
     "init-snapshot": "hb dependency:set-snapshot --dependencyVersionFix=hornet-js --module=hornet-js-core && hb dependency:set-snapshot --dependencyVersionFix=hornet-themes-intranet --module=hornet-themes-intranet && hb install",
-    "version": "echo $npm_package_version"
+    "version": "echo $npm_package_version",
+    "plop": "node ./node_modules/plop"
   },
-  "author": "MEAE - Ministère de l'Europe et des Affaires étrangères"
+  "devDependencies": {
+    "inquirer-directory": "2.1.0",
+    "inquirer-file": "1.0.0",
+    "plop": "2.0.0"
+  },
+
+  "author": "MEAE - Ministère de l'Europe et des Affaires étrangères",
+  "hornetJsBuilder": "1.5.4"
 }

@@ -49,7 +49,18 @@ se fasse via ce dernier.
 
 ## Vérification
 
-Vous pouvez accéder à l'application depuis l'url [http://localhost:8888/<%= slugify(appname) %>/](http://localhost:8888/<%= slugify(appname) %>)
+L'application est accessible depuis un navigateur à l'addresse : [http://localhost:8888/<%= slugify(appname) %>/](http://localhost:8888/<%= slugify(appname) %>)
+
+## Packaging de l'application
+
+```shell
+hb package
+```
+
+Les livrables sont à récupérer dans le répertoire : `target`
+
+- `<%= slugify(appname) %>-<%= slugify(appversion) %>-static.zip`
+- `<%= slugify(appname) %>-<%= slugify(appversion) %>-dynamic.zip`
 
 ## Fichier de configuration de l'application : default.json
 

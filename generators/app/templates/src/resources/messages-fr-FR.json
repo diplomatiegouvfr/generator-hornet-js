@@ -5,7 +5,7 @@
   "applicationLoading": "Chargement de l'application, veuillez patienter ...",
   "topButtonTitle": "Retour vers le haut de la page",
   "nfePage": {
-    "title": "Oops! Nous ne trouvons pas ce que vous cherchez!",
+    "title": "Cette page n'existe pas",
     "backToHome": "Retour à la page d'accueil"
   },
   "form": {
@@ -58,7 +58,7 @@
     }
   },
   "textarea": {
-    "alertMessage": "Le nombre de caractère renseigné est trop élevé par rapport au nombre maximum ({count}/{maxChar}).",
+    "alertMessage": "Le nombre de caractères renseignés est trop élevé par rapport au nombre maximum ({count}/{maxChar}).",
     "alertTitle": "Nombre de caractères trop élevé",
     "charLabel": "{count, plural, =1 {1 caractère} other {# caractères}}"
   },
@@ -113,7 +113,8 @@
   },
   "table": {
     "pager": {
-      "dropdownTitle": "Nombre d'élément"
+      "dropdownTitle": "Nombre d'éléments {summary}",
+      "inputLabel": "Numéro de la page affichée du {summary}"
     },
     "menuActions": {
       "title": "Menu d'actions"
@@ -138,7 +139,7 @@
     "massActionConfirmTitle": "Supprimer ce(s) élément(s)",
     "massActionTitle": "Suppression multiple",
     "sortByTitle": "Trier par {columnTitle} {sortTitle}",
-    "sortedByTitle": "Trié par {columnTitle}",
+    "sortedByTitle": "Trié par {columnTitle} {sortTitle}",
     "descending": "dans l'ordre décroissant",
     "ascending": "dans l'ordre croissant",
     "rowNumber": "Lignes : ",
@@ -151,10 +152,6 @@
       "csv": "CSV",
       "pdf": "PDF"
     },
-    "firstPage": "|< Début",
-    "prevPage": "< Précédent",
-    "nextPage": "Suivant >",
-    "lastPage": "Fin >|",
     "inputPage": "Saisie de la page à afficher",
     "10": "10",
     "20": "20",
@@ -208,7 +205,7 @@
     "title": "Changer la langue"
   },
   "header": {
-    "logoTitle": "Hornet - Retour vers la page d'accueil",
+    "logoTitle": "<%= appname %> - Retour vers la page d'accueil",
     "contentTitle": "Aller au contenu de l'",
     "menuTitle": "Aller au menu de l'",
     "planTitle": "Plan de l'",
@@ -241,6 +238,9 @@
       "guest": "Invité"
     }
   },
+  "authPage": {
+    "title": "Authentification"
+  },
   "contactPage": {
     "title": "Contact",
     "form": {
@@ -256,7 +256,7 @@
         "mail": {
           "label": "Mail",
           "required": "Le champ « Email » est obligatoire. Veuillez saisir ce champ.",
-          "format": "Le format du champ « Email » est incorrect (format attendu: nom@example.com)"
+          "format": "Le format du champ « Email » est incorrect (format attendu : nom@example.com)"
         },
         "message": {
           "label": "Message",

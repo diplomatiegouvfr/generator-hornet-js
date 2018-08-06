@@ -30,7 +30,7 @@ export class ContactServiceDataImpl extends ServiceRequest implements ContactSer
             content: data.message
         };
 
-        let templatedMessage: string = new Template(HornetComponent.getI18n("contactPage.mailTemplate")).process(valuesToWriteIntoMessage, "?");
+        let templatedMessage = new Template(HornetComponent.getI18n("contactPage.mailTemplate")).process(valuesToWriteIntoMessage, "?");
 
         let mailToSend: NodeMailerMessage = {
             from: Utils.config.getOrDefault("mail.mailSender", undefined),

@@ -15,15 +15,15 @@ module.exports = Generator.extend({
         var pkg = require("../../package.json");
         this.fmkversion = pkg.version;
 
-        this.argument("appname", {type: String, required: false});
-        this.argument("appversion", {type: String, required: false});
-        this.argument("appdescription", {type: String, required: false});
-        this.argument("fmkversion", {type: String, required: false});
-        this.argument("theme", {type: String, required: false});
-        this.argument("themeversion", {type: String, required: false});
-        this.argument("urlservice", {type: String, required: false});
-        this.argument("hostservice", {type: String, required: false});
-        this.argument("fullspa", {type: Boolean, required: false});
+        this.argument("appname", { type: String, required: false });
+        this.argument("appversion", { type: String, required: false });
+        this.argument("appdescription", { type: String, required: false });
+        this.argument("fmkversion", { type: String, required: false });
+        this.argument("theme", { type: String, required: false });
+        this.argument("themeversion", { type: String, required: false });
+        this.argument("urlservice", { type: String, required: false });
+        this.argument("hostservice", { type: String, required: false });
+        this.argument("fullspa", { type: Boolean, required: false });
     },
     prompting: function () {
 
@@ -116,51 +116,51 @@ module.exports = Generator.extend({
             default: false
         });
 
-        return this.prompt(prompts).then( function(answers) {
+        return this.prompt(prompts).then(function (answers) {
 
             if (!this.options.appname) {
                 this._applyParam(answers, "appname", "appname");
-            }else{
+            } else {
                 this._applyOptions("appname", this.options.appname);
             }
             if (!this.options.appversion) {
                 this._applyParam(answers, "appversion", "appversion");
-            }else{
+            } else {
                 this._applyOptions("appversion", this.options.appversion);
             }
             if (!this.options.appdescription) {
                 this._applyParam(answers, "appdescription", "appdescription");
-            }else{
+            } else {
                 this._applyOptions("appdescription", this.options.appdescription);
             }
             if (!this.options.fmkversion) {
                 this._applyParam(answers, "fmkversion", "fmkversion");
-            }else{
+            } else {
                 this._applyOptions("fmkversion", this.options.fmkversion);
             }
             if (!this.options.theme) {
                 this._applyParam(answers, "theme", "theme");
-            }else{
+            } else {
                 this._applyOptions("theme", this.options.theme);
             }
             if (!this.options.themeversion) {
                 this._applyParam(answers, "themeversion", "themeversion");
-            }else{
+            } else {
                 this._applyOptions("themeversion", this.options.themeversion);
             }
             if (!this.options.hostservice) {
                 this._applyParam(answers, "hostservice", "hostservice");
-            }else{
+            } else {
                 this._applyOptions("hostservice", this.options.hostservice);
             }
             if (!this.options.urlservice) {
                 this._applyParam(answers, "urlservice", "urlservice");
-            }else{
+            } else {
                 this._applyOptions("urlservice", this.options.urlservice);
             }
             if (!this.options.fullspa) {
                 this._applyParam(answers, "fullspa", "fullspa");
-            }else{
+            } else {
                 this._applyOptions("fullspa", this.options.fullspa);
             }
         }.bind(this));
@@ -203,8 +203,18 @@ module.exports = Generator.extend({
         // npmignore
         this._copy("npmignore", ".npmignore", defaultConfig);
 
+        // plopfile
+        this._copy("plopfile.js", "plopfile.js", defaultConfig);
+
+        // tests.webpack
+        this._copy("tests.webpack.js", "tests.webpack.js", defaultConfig);
+
         // config/*
         this._writingConfig(defaultConfig);
+
+        // test
+        this._writingTest(defaultConfig);
+
 
         // public
         // Attention, ne pas copier l"image unitairement, sinon le proccessing va la corrompre
@@ -212,6 +222,8 @@ module.exports = Generator.extend({
         this._writingStatic(defaultConfig);
 
         this._writingTemplate(defaultConfig);
+
+        this._writingPlopTemplate(defaultConfig);
 
         // src
         this._writingSrc(defaultConfig);
@@ -235,6 +247,10 @@ module.exports = Generator.extend({
     _writingTemplate: function (defaultConfig) {
         this._copy("template/**", "template/", defaultConfig);
     },
+    _writingPlopTemplate: function (defaultConfig) {
+        this._copy("plop-templates/**", "plop-templates/", defaultConfig);
+    },
+
     _writingSrc: function (defaultConfig) {
 
         // actions
@@ -272,6 +288,13 @@ module.exports = Generator.extend({
 
         //config spa
         this._copy("static/config-spa.json", defaultConfig);
+    },
+    _writingTest: function (defaultConfig) {
+        // templates
+        this._copy("test/template/**", "test/template/", defaultConfig);
+
+        // karma test example
+        this._copy("test/test.karma.tsx", defaultConfig);
     },
 
     _applyParam: function (answers, key, destkey) {
@@ -323,6 +346,6 @@ module.exports = Generator.extend({
     },
 
     install: function () {
-        this.installDependencies({bower: false});
+        this.installDependencies({ bower: false });
     }
 });

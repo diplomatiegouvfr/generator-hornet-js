@@ -8,23 +8,23 @@ pipeline {
         MODULE_GROUP="hornet-js"
         MODULE_ID="generator-hornet-js"
 
-        BUILD_TIMESTAMP=sh(script: 'date +%Y%m%d%H%M%S', returnStdout:true).trim()
+        BUILD_TIMESTAMP=sh(script: 'date +%Y%m%d.%H%M%S', returnStdout:true).trim()
         VERSION_PACKAGE=sh(script:"npm run version --silent", returnStdout:true).trim()
 
         VERSION_RELEASE="${VERSION_PACKAGE}"
-        VERSION_SNAPSHOT="${VERSION_RELEASE}-${BUILD_TIMESTAMP}"
+        VERSION_SNAPSHOT="${VERSION_RELEASE}-${BUILD_TIMESTAMP}-${BUILD_NUMBER}"
 
         // Construction
-        HORNETJSBUILDER_VERSION="1.5.0"
+        HORNETJSBUILDER_VERSION="1.5.3"
 
         // Publication
-        ARTIFACTORY_URL = "http://your.artifactory"
+        ARTIFACTORY_URL = "http://artifactory.app.diplomatie.gouv.fr/artifactory-dev"
         REPOSITORY_GROUP="hornet"
         REPOSITORY_NPM_SNAPSHOT = "${REPOSITORY_GROUP}-npm-snapshot"
         REPOSITORY_NPM_RELEASE = "${REPOSITORY_GROUP}-npm-release"
 
         // Qualité
-        SONAR_HOST = "http://your.sonar/sonar"
+        SONAR_HOST = "http://sonar01-nosaml.devng.diplomatie.gouv.fr/sonar"
         SONAR_CREDENTIALS_KEY = "hornet_cq_at_sonar01"
         SONAR_SCANNER_CLI = "3.0.3.778"
     }

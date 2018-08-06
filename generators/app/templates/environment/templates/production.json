@@ -44,10 +44,10 @@
     "host": "#{DEFAULT_SERVICE_HOST}",
     "name": "#{DEFAULT_SERVICE_CONTEXT}"
   },
-  "antivirus": {
+  "antivirus" : {
     "host" : "#{ANTIVIRUS_HOST}",
-    "port": #{ANTIVIRUS_PORT},
-    "timeout": #{ANTIVIRUS_TIMEOUTE}
+    "port" : #{ANTIVIRUS_PORT},
+    "timeout" : #{ANTIVIRUS_TIMEOUTE}
   },
   "mail": {
     "config": {
@@ -57,10 +57,6 @@
       "connectionTimeout": #{MAIL_TIMEOUT},
       "tls": {
         "rejectUnauthorized": #{MAIL_TLS_REJECT}
-      },
-      "auth": {
-        "user": "#{MAIL_USER}",
-        "pass": "#{MAIL_PASS}"
       }
     },
     "mailReceiver": "#{MAIL_RECEIVER}",

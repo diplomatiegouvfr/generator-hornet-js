@@ -96,7 +96,7 @@ body {
 
 h1#app-name {
     color: #fff;
-    font-size: 22px;
+    font-size: 1.375em;
     padding-bottom: 1em;
 }
 
@@ -151,7 +151,7 @@ label {
 }
 
 .cnx-info {
-    font-size: 13px;
+    font-size: 0.8125em;
     margin: 0.725em 0 0 0;
 }
 
