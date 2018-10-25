@@ -1,6 +1,6 @@
-import { AbstractRoutes, PageRouteInfos, PUBLIC_ROUTE } from "hornet-js-core/src/routes/abstract-routes";
+import { AbstractRoutes, PageRouteInfos, DataRouteInfos, PUBLIC_ROUTE } from "hornet-js-core/src/routes/abstract-routes";
 import {
-    URL_CONTACT
+    URL_CONTACT,
 } from "src/utils/urls";
 import { HomePage } from "src/views/gen/gen-hom-page";
 import { AidePage } from "src/views/gen/gen-aid-page";
@@ -8,7 +8,8 @@ import { PlanAppliPage } from "src/views/nav/nav-pap-page";
 import { AccessibilitePage } from "src/views/gen/gen-acb-page";
 import { DeclarationconformitePage } from "src/views/gen/gen-ddc-page";
 import { NotFoundPage } from "src/views/gen/gen-nfe-page";
-
+import { Injector } from "hornet-js-core/src/inject/injector";
+import { Roles } from "src/utils/roles";
 
 export class Routes extends AbstractRoutes {
     constructor() {
@@ -16,34 +17,34 @@ export class Routes extends AbstractRoutes {
 
         /* Routes des pages */
         this.addPageRoute("/accueil",
-            () => new PageRouteInfos(HomePage),
-            PUBLIC_ROUTE
+                          () => new PageRouteInfos(HomePage),
+                          PUBLIC_ROUTE,
         );
 
         this.addPageRoute("/404",
-            () => new PageRouteInfos(NotFoundPage),
-            PUBLIC_ROUTE
+                          () => new PageRouteInfos(NotFoundPage),
+                          PUBLIC_ROUTE,
 
         );
 
         this.addPageRoute("/aide",
-            () => new PageRouteInfos(AidePage),
-            PUBLIC_ROUTE
+                          () => new PageRouteInfos(AidePage),
+                          PUBLIC_ROUTE,
         );
 
         this.addPageRoute("/planAppli",
-            () => new PageRouteInfos(PlanAppliPage),
-            PUBLIC_ROUTE
+                          () => new PageRouteInfos(PlanAppliPage),
+                          PUBLIC_ROUTE,
         );
 
         this.addPageRoute("/politiqueAccessibilite",
-            () => new PageRouteInfos(AccessibilitePage),
-            PUBLIC_ROUTE
+                          () => new PageRouteInfos(AccessibilitePage),
+                          PUBLIC_ROUTE,
         );
 
         this.addPageRoute("/declarationConformite",
-            () => new PageRouteInfos(DeclarationconformitePage),
-            PUBLIC_ROUTE
+                          () => new PageRouteInfos(DeclarationconformitePage),
+                          PUBLIC_ROUTE,
         );
 
         /* Routes lazy */

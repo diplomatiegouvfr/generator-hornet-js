@@ -71,7 +71,8 @@ pipeline {
 
 						if ( BRANCH_NAME.equals("develop") ) {
 							mapEnv["BUILD_VERSION"] = mapEnv["MODULE_VERSION"] + "-" + mapEnv["BUILD_TIMESTAMP"] + "-" + env.BUILD_NUMBER
-						} else {
+
+						else if ( BRANCH_NAME.equals("master") ) {
 							mapEnv["BUILD_VERSION"] = mapEnv["MODULE_VERSION"]
 						}
 

@@ -1,11 +1,7 @@
 import { Utils } from "hornet-js-utils";
 import { Logger } from "hornet-js-utils/src/logger";
 import { AuthService } from "src/services/data/auth/auth-service";
-import { ServiceSecure } from "hornet-js-core/src/services/service-secure";
 import { Promise } from "hornet-js-utils/src/promise-api";
-import { Response } from "superagent";
-
-const jwt = require("jsonwebtoken");
 
 const logger: Logger = Utils.getLogger("mock.services.page.auth.auth-service-impl-mock");
 

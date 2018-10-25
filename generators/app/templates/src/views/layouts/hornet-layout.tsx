@@ -35,7 +35,7 @@ export class HornetLayout extends HornetPage<any, HornetLayoutProps, any> {
         appStatic: "/js/client.js",
         appStaticDll: "/js/dll",
         nojavascript: false,
-        applicationTitle: ""
+        applicationTitle: "",
     };
 
     constructor(props: HornetLayoutProps, context?: any) {
@@ -85,13 +85,13 @@ export class HornetLayout extends HornetPage<any, HornetLayoutProps, any> {
 
         try {
 
-            let compatible = "<!--[if IE]> <meta http-equiv=\"X-UA-Compatible\" content=\"edge\" /> <![endif]-->";
+            const compatible = "<!--[if IE]> <meta http-equiv=\"X-UA-Compatible\" content=\"edge\" /> <![endif]-->";
             let configMock = Utils.config.get("mock");
 
             if (!configMock || !configMock.enable) {
                 configMock = Utils.config.getOrDefault("mock", {
-                    enabled: false, sevicePage: {enabled: false},
-                    seviceData: {enabled: false}
+                    enabled: false, servicePage: {enabled: false},
+                    serviceData: {enabled: false}
                 })
             }
             return (
@@ -155,9 +155,9 @@ export class HornetLayout extends HornetPage<any, HornetLayoutProps, any> {
 
             if (fs.existsSync(dllDirectory)) {
 
-                let listFiles = fs.readdirSync(dllDirectory);
+                const listFiles = fs.readdirSync(dllDirectory);
                 listFiles.reverse().forEach((file, idx) => {
-                    if (path.extname(file) == ".js" && path.basename(file).match(/^dll_/)) {
+                    if (path.extname(file) === ".js" && path.basename(file).match(/^dll_/)) {
                         dlls.push(<script
                             src={this.genUrlStatic(path.join(this.state.appStaticDll, path.basename(file)))}
                             key={"dll-" + idx}></script>);

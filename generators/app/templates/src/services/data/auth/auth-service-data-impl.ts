@@ -3,12 +3,6 @@ import { Logger } from "hornet-js-utils/src/logger";
 import { URL_UTILISATEURS, URL_UTILISATEURS_AUTH } from "src/utils/urls";
 import { HornetRequest } from "hornet-js-core/src/services/hornet-superagent-request";
 import { AuthService } from "src/services/data/auth/auth-service";
-import { ServiceSecure } from "hornet-js-core/src/services/service-secure";
-import { Response } from "superagent";
-import * as fs from "fs";
-import * as path from "path";
-
-const jwt = require("jsonwebtoken");
 
 const logger: Logger = Utils.getLogger("<%= slugify(appname) %>.services.data.auth.auth-service-data-impl");
 
