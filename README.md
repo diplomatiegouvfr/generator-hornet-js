@@ -67,8 +67,8 @@ Le générateur demande plusieurs informations nécessaires à l'initialisation 
 Pour un projet fonctionnel avec hornet-js:
 
 * ` Version de votre projet:` `(1.0.0)` :  1.0.0
-* ` Version du framework (hornet-js):` : 5.1.1
-* ` Version du thème de l'application` : 5.1.1
+* ` Version du framework (hornet-js):` : 5.x.x
+* ` Version du thème de l'application` : 5.x.x
 
 Le processus d'initialisation vous indique ensuite les fichiers créés :
 
