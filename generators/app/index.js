@@ -283,6 +283,9 @@ module.exports = Generator.extend({
         //README.md
         this._copy("README.md", defaultConfig);
 
+        //LICENCE.md
+        this._copy("LICENSE.md", defaultConfig);
+
         //index
         this._copy("static/index.html", defaultConfig);
 
