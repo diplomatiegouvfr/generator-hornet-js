@@ -58,8 +58,6 @@ Le générateur demande plusieurs informations nécessaires à l'initialisation 
 * `Version de votre projet:` `(1.0.0)` : version du projet (`1.0.0` par défaut). **Ajouter -rc.X  ou X numéro de la version  d'hornetJS. [Ex: 1.0.0-rc.2]**
 * `Description de votre projet ` : un texte court présentant succintement le projet.
 * `Version du framework (hornet-js):` `(5.x.x)` : version du framework hornet-js.
-* `Thème de l'application` : hornet-themes-intranet par défaut 
-* `Version du thème de l'application` `(5.x.x)`: par défaut la version de la dernière release
 * `Host de la partie service` : URL où sont accessibles les services (partie Java Tomcat) de votre application ( par défaut : localhost:8080)
 * `ContextPath de la partie service` : nom de l'application fournissant les services (partie Java Tomcat) de votre application.
 * `Mode full spa`: si l'application est en mode full spa ou non: `true` pour oui, `false` pour non (`false` par defaut)
@@ -68,7 +66,6 @@ Pour un projet fonctionnel avec hornet-js:
 
 * ` Version de votre projet:` `(1.0.0)` :  1.0.0
 * ` Version du framework (hornet-js):` : 5.x.x
-* ` Version du thème de l'application` : 5.x.x
 
 Le processus d'initialisation vous indique ensuite les fichiers créés :
 
@@ -83,8 +80,6 @@ Le processus d'initialisation vous indique ensuite les fichiers créés :
    create src/resources/messages-fr-FR.json
    create src/resources/messages.json
    create src/resources/navigation.json
-   create static/css/auth.css
-   create static/css/theme.css
    create static/img/error.gif
    create static/img/fond_connexion.jpg
    create static/img/icon_error.png

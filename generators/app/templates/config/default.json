@@ -64,7 +64,6 @@
     "defaultDuration": 3600
     // in second
   },
-  "themeName": "<%= slugify(theme) %>",
   "antivirus" : {
     "port" : 3310,
     "host" : "localhost",
@@ -186,7 +185,7 @@
     }
   },
   "fullSpa": {
-    "enabled": <%= fullspa %>,
+    "enabled": "<%= fullspa %>",
     "host": "",
     "name": "/services",
     "staticPath": ""

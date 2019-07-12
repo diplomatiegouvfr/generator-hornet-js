@@ -3,44 +3,34 @@
   "version": "<%= appversion %>",
   "main": "index.js",
   "description": "<%= appdescription %>",
-  "tsDefinitionDependencies": {
-    "hornet-js-ts-typings": "<%= fmkversion %>",
-    "hornet-js-utils-dts": "<%= fmkversion %>",
-    "hornet-js-core-dts": "<%= fmkversion %>",
-    "hornet-js-components-dts": "<%= fmkversion %>",
-    "hornet-js-react-components-dts": "<%= fmkversion %>",
-    "hornet-js-passport-dts": "<%= fmkversion %>",
-    "hornet-js-test-dts": "<%= fmkversion %>"
-  },
-  "appDependencies": {
-    "<%= theme %>": "<%= themeversion %>",
+  "dependencies": {
     "hornet-js-components": "<%= fmkversion %>",
     "hornet-js-react-components": "<%= fmkversion %>",
     "hornet-js-core": "<%= fmkversion %>",
     "hornet-js-utils": "<%= fmkversion %>",
     "hornet-js-passport": "<%= fmkversion %>",
+    "classnames": "2.2.6",
     "connect-flash": "0.1.1",
     "passport": "0.2.1",
     "passport-local": "1.0.0",
-    "sha1": "1.1.1"
-  },
-  "buildDependencies": {
-  },
-  "testDependencies": {
-    "hornet-js-test": "<%= fmkversion %>"
-  },
-  "scripts": {
-    "init-dev": "hb install",
-    "init-snapshot": "hb dependency:set-snapshot --dependencyVersionFix=hornet-js --module=hornet-js-core && hb dependency:set-snapshot --dependencyVersionFix=hornet-themes-intranet --module=hornet-themes-intranet && hb install",
-    "version": "echo $npm_package_version",
-    "plop": "node ./node_modules/plop"
+    "sha1": "1.1.1",
+    "source-map-support": "0.5.12",
+    "tslib": "1.9.3"
   },
   "devDependencies": {
+    "@types/lodash": "4.14.134",
+    "@types/node": "10.14.10",
+    "@types/react": "16.7.22",
+    "hornet-js-test": "<%= fmkversion %>",
     "inquirer-directory": "2.1.0",
     "inquirer-file": "1.0.0",
     "plop": "2.0.0"
   },
-
-  "author": "MEAE - Ministère de l'Europe et des Affaires étrangères",
-  "hornetJsBuilder": "1.6.0"
+  "scripts": {
+    "init-dev": "hb install",
+    "version": "echo $npm_package_version",
+    "plop": "node ./node_modules/plop"
+  },
+  "hornetJsBuilder": "2.0.0",
+  "author": "MEAE - Ministère de l'Europe et des Affaires étrangères"
 }

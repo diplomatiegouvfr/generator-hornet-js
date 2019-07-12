@@ -19,8 +19,6 @@ module.exports = Generator.extend({
         this.argument("appversion", { type: String, required: false });
         this.argument("appdescription", { type: String, required: false });
         this.argument("fmkversion", { type: String, required: false });
-        this.argument("theme", { type: String, required: false });
-        this.argument("themeversion", { type: String, required: false });
         this.argument("urlservice", { type: String, required: false });
         this.argument("hostservice", { type: String, required: false });
         this.argument("fullspa", { type: Boolean, required: false });
@@ -68,24 +66,6 @@ module.exports = Generator.extend({
             type: "input",
             name: "fmkversion",
             message: "Version du framework (hornet-js)",
-            default: pkg.version
-        });
-        prompts.push({
-            when: function () {
-                return !_this.options.theme;
-            },
-            type: "input",
-            name: "theme",
-            message: "Theme de l'application, ex : hornet-themes-intranet",
-            default: "hornet-themes-intranet"
-        });
-        prompts.push({
-            when: function () {
-                return !_this.options.themeversion;
-            },
-            type: "input",
-            name: "themeversion",
-            message: "Version du theme de l'application",
             default: pkg.version
         });
         prompts.push({
@@ -138,16 +118,6 @@ module.exports = Generator.extend({
             } else {
                 this._applyOptions("fmkversion", this.options.fmkversion);
             }
-            if (!this.options.theme) {
-                this._applyParam(answers, "theme", "theme");
-            } else {
-                this._applyOptions("theme", this.options.theme);
-            }
-            if (!this.options.themeversion) {
-                this._applyParam(answers, "themeversion", "themeversion");
-            } else {
-                this._applyOptions("themeversion", this.options.themeversion);
-            }
             if (!this.options.hostservice) {
                 this._applyParam(answers, "hostservice", "hostservice");
             } else {
@@ -158,7 +128,7 @@ module.exports = Generator.extend({
             } else {
                 this._applyOptions("urlservice", this.options.urlservice);
             }
-            if (!this.options.fullspa) {
+            if (!this.options.fullspa !== false && !this.options.fullspa !== true) {
                 this._applyParam(answers, "fullspa", "fullspa");
             } else {
                 this._applyOptions("fullspa", this.options.fullspa);
@@ -172,8 +142,6 @@ module.exports = Generator.extend({
             appversion: this.appversion,
             appdescription: this.appdescription,
             fmkversion: this.fmkversion,
-            theme: this.theme,
-            themeversion: this.themeversion,
             hostservice: this.hostservice,
             urlservice: this.urlservice,
             fullspa: this.fullspa
@@ -181,6 +149,10 @@ module.exports = Generator.extend({
 
         //builder.js
         this._copy("builder.js", defaultConfig);
+
+        this._copy("webpack.addons.config.js", defaultConfig);
+        
+        this._copy("karma.addons.config.js", defaultConfig);
 
         //hbw.sh
         this._copy("hbw.sh", defaultConfig);
@@ -275,6 +247,8 @@ module.exports = Generator.extend({
         // views
         this._copy("src/views/**", "src/views/", defaultConfig);
 
+        this._copySingle("src/views/**/*.jpg", "src/views/");
+
         // client/server/injector
         this._copy("src/client.ts", defaultConfig);
         this._copy("src/server.ts", defaultConfig);
@@ -326,11 +300,13 @@ module.exports = Generator.extend({
             copyTo = copyFrom;
             conf = toPath;
         }
-
+        
         this.fs.copyTpl(
             this.templatePath(copyFrom),
             this.destinationPath(copyTo),
-            conf
+            conf,
+            {},
+            { globOptions: {ignore: "/**/*.jpg"} }
         );
     },
     _copySingle: function (fromPath, toPath) {

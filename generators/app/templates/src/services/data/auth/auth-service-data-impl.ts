@@ -1,10 +1,10 @@
 import { Utils } from "hornet-js-utils";
-import { Logger } from "hornet-js-utils/src/logger";
+import { Logger } from "hornet-js-logger/src/logger";
 import { URL_UTILISATEURS, URL_UTILISATEURS_AUTH } from "src/utils/urls";
 import { HornetRequest } from "hornet-js-core/src/services/hornet-superagent-request";
 import { AuthService } from "src/services/data/auth/auth-service";
 
-const logger: Logger = Utils.getLogger("<%= slugify(appname) %>.services.data.auth.auth-service-data-impl");
+const logger: Logger = Logger.getLogger("<%= slugify(appname) %>.services.data.auth.auth-service-data-impl");
 
 /**
  * Implementation des services pour l'authentification

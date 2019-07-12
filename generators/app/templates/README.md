@@ -74,7 +74,6 @@ Ce fichier ne doit pas être modifié, excepté pour le log console. Les modific
 |-----------|-------------|--------|
 |contextPath| Contexte de l'application déployée|Par défaut vide|
 |welcomePage|Page de démarrage de l'application|Passé en paramètre du ServerConfiguration|
-|themeName|nom de la dépendance de theme pour la copie dans les static||
 
 ```json
 {

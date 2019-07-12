@@ -1,3 +1,7 @@
+# generator-hornet-js 5.4.0
+
+- ef5ad4d [...] 61b9573 : 5.3.0 => 5.4.0
+
 # generator-hornet-js 5.3.0
 
 - 8ddd7e6 EVOL[] : retrait de hornet-js-core du dllEntry vendor

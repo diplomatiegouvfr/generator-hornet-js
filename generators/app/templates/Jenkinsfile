@@ -57,7 +57,6 @@ pipeline {
             steps {
                 sh '''
                     bash hbw.sh dependency:set-snapshot --dependencyVersionFix=hornet-js --module=hornet-js-core
-                    bash hbw.sh dependency:set-snapshot --dependencyVersionFix=hornet-themes-intranet --module=hornet-themes-intranet
                 '''
             }
             post {

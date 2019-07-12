@@ -1,5 +1,5 @@
 import { Utils } from "hornet-js-utils";
-import { Logger } from "hornet-js-utils/src/logger";
+import { Logger } from "hornet-js-logger/src/logger";
 import * as React from "react";
 import { Class } from "hornet-js-utils/src/typescript-utils";
 import { HornetPage, HornetPageProps } from "hornet-js-react-components/src/widget/component/hornet-page";
@@ -12,17 +12,19 @@ import { User } from "hornet-js-react-components/src/widget/user/user";
 import { Menu } from "hornet-js-react-components/src/widget/navigation/menu";
 import { LayoutSwitcher } from "hornet-js-react-components/src/widget/screen/layout-switcher";
 import { ChangeLanguage } from "hornet-js-react-components/src/widget/language/change-language";
-import { Dropdown, Position } from "hornet-js-react-components/src/widget/dropdown/dropdown";
+import { Position } from "hornet-js-react-components/src/widget/dropdown/dropdown";
 import * as ChangeLanguageService from "hornet-js-core/src/services/default/change-language";
 import { NavigationUtils } from "hornet-js-components/src/utils/navigation-utils";
 import { NotificationSessionFooter } from "hornet-js-react-components/src/widget/notification/notification-session-footer";
 import { MenuAccessibilite } from "hornet-js-react-components/src/widget/navigation/menu-accessibilite";
 
+import "hornet-js-react-components/src/widget/sass/gen.scss";
+import "src/views/layouts/sass/_auth.scss";
 
 import * as _ from "lodash";
 import * as classNames from "classnames";
 
-const logger: Logger = Utils.getLogger("<%= slugify(appname) %>.views.layouts.hornet-app");
+const logger: Logger = Logger.getLogger("<%= slugify(appname) %>.views.layouts.hornet-app");
 
 export interface HornetAppProps extends HornetPageProps, HornetComponentProps {
     componentContext: any;
