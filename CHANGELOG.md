@@ -1,3 +1,8 @@
+# generator-hornet-js 5.4.1
+
+- 2a4e730 PROJ[]: Utilisation modulaire de lodash
+- 33944ad PROJ[]: Suppression de plop
+
 # generator-hornet-js 5.4.0
 
 - ef5ad4d [...] 61b9573 : 5.3.0 => 5.4.0

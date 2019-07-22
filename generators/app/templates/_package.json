@@ -11,6 +11,8 @@
     "hornet-js-passport": "<%= fmkversion %>",
     "classnames": "2.2.6",
     "connect-flash": "0.1.1",
+    "lodash.concat": "4.5.0",
+    "lodash.startswith": "4.2.1",
     "passport": "0.2.1",
     "passport-local": "1.0.0",
     "sha1": "1.1.1",
@@ -18,19 +20,18 @@
     "tslib": "1.9.3"
   },
   "devDependencies": {
-    "@types/lodash": "4.14.134",
+    "@types/lodash.concat": "4.5.6",
+    "@types/lodash.startswith": "4.2.6",
     "@types/node": "10.14.10",
     "@types/react": "16.7.22",
     "hornet-js-test": "<%= fmkversion %>",
     "inquirer-directory": "2.1.0",
-    "inquirer-file": "1.0.0",
-    "plop": "2.0.0"
+    "inquirer-file": "1.0.0"
   },
   "scripts": {
     "init-dev": "hb install",
-    "version": "echo $npm_package_version",
-    "plop": "node ./node_modules/plop"
+    "version": "echo $npm_package_version"
   },
-  "hornetJsBuilder": "2.0.0",
+  "hornetJsBuilder": "2.0.2",
   "author": "MEAE - Ministère de l'Europe et des Affaires étrangères"
 }

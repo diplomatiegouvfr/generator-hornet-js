@@ -3,7 +3,6 @@ import { Utils } from "hornet-js-utils";
 import { Logger } from "hornet-js-logger/src/logger";
 import { HornetComponentProps } from "hornet-js-components/src/component/ihornet-component";
 import { HornetComponent } from "hornet-js-react-components/src/widget/component/hornet-component";
-import * as _ from "lodash";
 
 const logger: Logger = Logger.getLogger("<%= slugify(appname) %>.views.gen.gen-cnx-page");
 
@@ -92,7 +91,7 @@ export class ConnexionPage extends HornetComponent<ConnexionPageProps, any> {
 
     _renderErrorDiv() {
 
-        if (_.isArray(this.state.errorMessage) && this.state.errorMessage.length >= 1) {
+        if (Array.isArray(this.state.errorMessage) && this.state.errorMessage.length >= 1) {
             return (
                 <div className="errors" id="status">
                     {this.state.errorMessage}

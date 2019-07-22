@@ -4,8 +4,8 @@ Le module Node « generator-hornet-js » contient les éléments de création d'
 
 ## Pré-requis
 
-* NodeJS 8.x.x LTS
-* hornet-js-builder 1.x.x (le builder) installé globalement avec la commande `npm install -g hornet-js-build`
+* NodeJS 10.x.x LTS
+* hornet-js-builder 2.x.x (le builder) installé globalement avec la commande `npm install -g hornet-js-build`
 
 ## Yeoman
 

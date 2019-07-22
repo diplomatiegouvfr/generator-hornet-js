@@ -175,8 +175,6 @@ module.exports = Generator.extend({
         // npmignore
         this._copy("npmignore", ".npmignore", defaultConfig);
 
-        // plopfile
-        this._copy("plopfile.js", "plopfile.js", defaultConfig);
 
         // tests.webpack
         this._copy("tests.webpack.js", "tests.webpack.js", defaultConfig);
@@ -194,8 +192,6 @@ module.exports = Generator.extend({
         this._writingStatic(defaultConfig);
 
         this._writingTemplate(defaultConfig);
-
-        this._writingPlopTemplate(defaultConfig);
 
         // src
         this._writingSrc(defaultConfig);
@@ -218,9 +214,6 @@ module.exports = Generator.extend({
     },
     _writingTemplate: function (defaultConfig) {
         this._copy("template/**", "template/", defaultConfig);
-    },
-    _writingPlopTemplate: function (defaultConfig) {
-        this._copy("plop-templates/**", "plop-templates/", defaultConfig);
     },
 
     _writingSrc: function (defaultConfig) {
